@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "788563707797",
+    "project_id": "chat-menager-app",
+    "storage_bucket": "chat-menager-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:788563707797:android:582b40dabb87771f7e189c",
+        "android_client_info": {
+          "package_name": "com.example.chat_menager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "788563707797-3fl5qdkj38op1m1qcfj3j6f20r42jvrj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhKJWK3oVjf-DsLV6fqOhfA20KoIMwtCI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "788563707797-3fl5qdkj38op1m1qcfj3j6f20r42jvrj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
