@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:chat_menager/core/model/user_model.dart';
 import 'package:chat_menager/get_it/get_it.dart';
 import 'package:chat_menager/repository/repository.dart';
 import 'package:equatable/equatable.dart';
@@ -9,7 +10,13 @@ part 'settings_state.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final repository = locator<Repository>();
-  SettingsBloc() : super(SettingsState(status: SettingsStatus.init)) {
+  SettingsBloc()
+      : super(
+          SettingsState(
+            status: SettingsStatus.init,
+            userModel: UserModel(userId: "", email: ""),
+          ),
+        ) {
     on<SignOutEvent>(settingsSignOut);
   }
 
@@ -21,9 +28,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       );
 
       final result = await repository.singOut();
+
       if (result) {
         emit(
-          state.copyWith(status: SettingsStatus.success),
+          state.copyWith(status: SettingsStatus.success, userModel: null),
         );
       } else {
         emit(

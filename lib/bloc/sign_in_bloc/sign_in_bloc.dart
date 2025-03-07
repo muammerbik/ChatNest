@@ -11,6 +11,7 @@ part 'sign_in_state.dart';
 
 class SignInBloc extends Bloc<SignInEvent, SignInState> {
   final repository = locator<Repository>();
+
   SignInBloc()
       : super(
           SignInState(
@@ -33,12 +34,16 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
           event.email, event.password);
 
       if (userModel != null) {
-        emit(state.copyWith(
-          status: SignInStatus.success,
-          userModel: userModel,
-        ));
+        emit(
+          state.copyWith(
+            status: SignInStatus.success,
+            userModel: userModel,
+          ),
+        );
       } else {
-        emit(state.copyWith(status: SignInStatus.error));
+        emit(
+          state.copyWith(status: SignInStatus.error),
+        );
       }
     } catch (e) {
       emit(

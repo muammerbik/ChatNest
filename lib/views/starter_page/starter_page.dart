@@ -1,7 +1,9 @@
-
+import 'package:chat_menager/bloc/sign_up_bloc/sign_up_bloc.dart';
+import 'package:chat_menager/components/buttons/custom_bottom_bar.dart';
 import 'package:chat_menager/views/onboarding_view/view/onboarding_page_view.dart';
 import 'package:chat_menager/views/splash_page_view/splash_page_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StarterPage extends StatefulWidget {
   const StarterPage({super.key});
@@ -22,7 +24,7 @@ class _StarterPageState extends State<StarterPage> {
       const Duration(seconds: 3),
     );
     if (mounted) {
-      Navigator.of(context).push(
+      Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => MainView(),
         ),
@@ -36,16 +38,25 @@ class _StarterPageState extends State<StarterPage> {
   }
 }
 
-class MainView extends StatefulWidget {
+class MainView extends StatelessWidget {
   const MainView({super.key});
 
   @override
-  State<MainView> createState() => _MainViewState();
-}
-
-class _MainViewState extends State<MainView> {
-  @override
   Widget build(BuildContext context) {
-    return OnboardingPageView();
+    return BlocProvider(
+      create: (context) => SignUpBloc()..add(CurrentUserStartEvent()),
+      child: BlocBuilder<SignUpBloc, SignUpState>(
+        builder: (context, state) {
+          if (state.status == SignUpStatus.loading) {
+            return SplashPageView();
+          } else if (state.status == SignUpStatus.success &&
+              state.userModel != null) {
+            return BottomBar();
+          } else {
+            return OnboardingPageView();
+          }
+        },
+      ),
+    );
   }
 }

@@ -4,19 +4,15 @@ enum SettingsStatus { init, loading, success, error }
 
 class SettingsState extends Equatable {
   final SettingsStatus status;
+  final UserModel userModel;
 
-  const SettingsState({
-    required this.status,
-  });
+  const SettingsState({required this.status, required this.userModel});
 
-  SettingsState copyWith({
-    SettingsStatus? status,
-  }) {
+  SettingsState copyWith({SettingsStatus? status, UserModel? userModel}) {
     return SettingsState(
-      status: status ?? this.status,
-    );
+        status: status ?? this.status, userModel: userModel ?? this.userModel);
   }
 
   @override
-  List<Object?> get props => [status];
+  List<Object?> get props => [status, userModel];
 }

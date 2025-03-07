@@ -16,7 +16,7 @@ class FirebaseAuthService implements AuthBase {
       }
       return null;
     } catch (e) {
-      debugPrint("Current user hatasi: $e");
+      debugPrint("Current user hatası: $e");
       return null;
     }
   }
@@ -34,7 +34,7 @@ class FirebaseAuthService implements AuthBase {
       var userCredential = await firebaseAuth.signInAnonymously();
       return _userFromFirebase(userCredential.user!);
     } catch (e) {
-      debugPrint("singInAnonymously hattaaa$e");
+      debugPrint("SingInAnonymously Giriş Hatası$e");
       return null;
     }
   }
@@ -47,7 +47,7 @@ class FirebaseAuthService implements AuthBase {
       await firebaseAuth.signOut();
       return true;
     } catch (e) {
-      debugPrint(" Sign out Hatası $e");
+      debugPrint(" Sign Out Hatası $e");
     }
     return false;
   }
@@ -82,12 +82,10 @@ class FirebaseAuthService implements AuthBase {
 
       return null;
     } catch (e) {
-      debugPrint('Google ile giriş yaparken hata oluştu: $e');
+      debugPrint('Google ile Giriş Hatası: $e');
       return null;
     }
   }
-
-  
 
   @override
   Future<UserModel?> createUserWithSingIn(String email, String password) async {

@@ -22,3 +22,5 @@ class SignUpStartEvent extends SignUpEvent {
   @override
   List<Object> get props => [name, surname, email, password];
 }
+
+class CurrentUserStartEvent extends SignUpEvent {}
