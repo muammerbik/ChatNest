@@ -68,10 +68,6 @@ class Repository implements AuthBase {
     return await fireStoreService.readUser(usermodel!.userId);
   }
 
-
-
-
-
   Future<bool> updateUserName(String userId, String newUserName) async {
     return await fireStoreService.updateUserName(userId, newUserName);
   }
@@ -83,6 +79,9 @@ class Repository implements AuthBase {
     await fireStoreService.updateProfilePhoto(userId, profilPhotoUrl);
     return profilPhotoUrl;
   }
+
+
+
 
   Stream<List<MesajModel>> getMessagers(
       String currentUserId, String sohbetEdilenUserId) {

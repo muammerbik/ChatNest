@@ -2,43 +2,43 @@
 import 'package:chat_menager/components/custom_text/custom_text.dart';
 import 'package:flutter/material.dart';
 
-class CustomAppbarView extends StatefulWidget implements PreferredSizeWidget {
+class CustomAppBarView extends StatefulWidget implements PreferredSizeWidget {
   final String? appBarTitle;
   final bool? centerTitle;
   final List<IconButton>? actionIcons;
-  final Color? appbarColor;
+  final Color? appBarColor;
   final Color? textColor;
   final VoidCallback? onTap;
   final Color? iconColor;
-  final IconButton? leadingIcon; // Yeni parametre eklendi
+  final IconButton? leadingIcon;
 
-  const CustomAppbarView({
-    Key? key,
+  const CustomAppBarView({
+    super.key,
     this.appBarTitle,
     this.centerTitle,
     this.actionIcons,
-    this.appbarColor,
+    this.appBarColor,
     this.textColor,
     this.onTap,
     this.iconColor,
-    this.leadingIcon, // Yeni parametreye ekledik
-  }) : super(key: key);
+    this.leadingIcon,
+  });
 
   @override
-  State<CustomAppbarView> createState() => _CustomAppbarViewState();
+  State<CustomAppBarView> createState() => _CustomAppBarViewState();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class _CustomAppbarViewState extends State<CustomAppbarView> {
+class _CustomAppBarViewState extends State<CustomAppBarView> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
         surfaceTintColor: Colors.white,
         centerTitle: widget.centerTitle,
-        backgroundColor: widget.appbarColor ?? Colors.white,
-        leading: widget.leadingIcon ?? null,
+        backgroundColor: widget.appBarColor ?? Colors.white,
+        leading: widget.leadingIcon,
         title: TextWidgets(
           text: widget.appBarTitle!,
           size: 24,
@@ -47,11 +47,3 @@ class _CustomAppbarViewState extends State<CustomAppbarView> {
         actions: widget.actionIcons ?? []);
   }
 }
-
-/** IconButton(
-        onPressed: widget.onTap,
-        icon: Icon(
-          Icons.arrow_back,
-          color: widget.iconColor ?? Colors.black,
-        ),
-      ), */

@@ -1,3 +1,4 @@
+import 'package:chat_menager/bloc/home_bloc/home_bloc.dart';
 import 'package:chat_menager/components/navigation_helper/navigation_halper.dart';
 import 'package:chat_menager/constants/app_strings.dart';
 import 'package:chat_menager/firebase_options.dart';
@@ -6,6 +7,7 @@ import 'package:chat_menager/views/starter_page/starter_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 void main() async {
@@ -19,7 +21,11 @@ void main() async {
     statusBarIconBrightness: Brightness.dark,
   ));
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(MyApp());
+  runApp(MultiBlocProvider(providers: [
+      BlocProvider(
+          create: (context) => HomeBloc(),
+        ),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

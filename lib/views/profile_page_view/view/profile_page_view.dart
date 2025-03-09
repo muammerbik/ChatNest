@@ -50,7 +50,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
             },
             builder: (context, state) {
               return Scaffold(
-                appBar: CustomAppbarView(
+                appBar: CustomAppBarView(
                   appBarTitle: 'Profil',
                   centerTitle: false,
                   textColor: Colors.black,

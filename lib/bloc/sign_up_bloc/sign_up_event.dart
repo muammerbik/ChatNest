@@ -36,6 +36,7 @@ class CropImageEvent extends SignUpEvent {
   @override
   List<Object> get props => [imageFile];
 }
+
 class UpdateUserNameEvent extends SignUpEvent {
   final String userId;
   final String newUserName;
@@ -48,6 +49,7 @@ class UpdateUserNameEvent extends SignUpEvent {
   @override
   List<Object> get props => [userId, newUserName];
 }
+
 class UploadFileEvent extends SignUpEvent {
   final String userId;
   final String fileType;

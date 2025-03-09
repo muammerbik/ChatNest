@@ -75,8 +75,8 @@ class UserModel {
     return UserModel(
       userId: map['userId'] as String? ?? '',
       email: map['email'] as String? ?? '',
-      userName: map['userName'] as String?,
-      surname: map['surname'] as String?,
+      userName: map['userName'] as String? ??"",
+      surname: map['surname'] as String? ?? "",
       profileUrl: map['profileUrl'] as String? ??
           "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png",
       createdAt: map['createdAt'] != null

@@ -34,7 +34,7 @@ class _SettingsPageViewState extends State<SettingsPageView> {
             },
             builder: (context, state) {
               return Scaffold(
-                appBar: CustomAppbarView(
+                appBar: CustomAppBarView(
                   appBarTitle: "Ayarlar",
                   textColor: black,
                   centerTitle: true,

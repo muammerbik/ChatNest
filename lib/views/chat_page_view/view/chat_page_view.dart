@@ -15,7 +15,7 @@ class _ChatPageViewState extends State<ChatPageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppbarView(
+      appBar: CustomAppBarView(
         appBarTitle: 'Sohbetler',
         centerTitle: false,
         textColor: Colors.black,
