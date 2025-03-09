@@ -24,3 +24,41 @@ class SignUpStartEvent extends SignUpEvent {
 }
 
 class CurrentUserStartEvent extends SignUpEvent {}
+
+class PickImageFromGalleryEvent extends SignUpEvent {}
+
+class PickImageFromCameraEvent extends SignUpEvent {}
+
+class CropImageEvent extends SignUpEvent {
+  final File imageFile;
+  const CropImageEvent(this.imageFile);
+
+  @override
+  List<Object> get props => [imageFile];
+}
+class UpdateUserNameEvent extends SignUpEvent {
+  final String userId;
+  final String newUserName;
+
+  const UpdateUserNameEvent({
+    required this.userId,
+    required this.newUserName,
+  });
+
+  @override
+  List<Object> get props => [userId, newUserName];
+}
+class UploadFileEvent extends SignUpEvent {
+  final String userId;
+  final String fileType;
+  final File profilePhoto;
+
+  const UploadFileEvent({
+    required this.userId,
+    required this.fileType,
+    required this.profilePhoto,
+  });
+
+  @override
+  List<Object> get props => [userId, fileType, profilePhoto];
+}

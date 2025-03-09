@@ -5,7 +5,6 @@ import 'package:chat_menager/get_it/get_it.dart';
 import 'package:chat_menager/repository/repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-
 part 'sign_in_event.dart';
 part 'sign_in_state.dart';
 

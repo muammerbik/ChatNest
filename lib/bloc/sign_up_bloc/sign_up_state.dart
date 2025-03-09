@@ -6,6 +6,7 @@ class SignUpState extends Equatable {
   final SignUpStatus status;
   final List<UserModel> allUserList;
   final UserModel userModel;
+  final File? imageFile;
 
   final TextEditingController nameController;
   final TextEditingController surnameController;
@@ -16,6 +17,7 @@ class SignUpState extends Equatable {
     required this.status,
     required this.allUserList,
     required this.userModel,
+    this.imageFile,
     TextEditingController? nameController,
     TextEditingController? surnameController,
     TextEditingController? emailController,
@@ -29,6 +31,7 @@ class SignUpState extends Equatable {
     SignUpStatus? status,
     List<UserModel>? allUserList,
     UserModel? userModel,
+    File? imageFile,
     TextEditingController? nameController,
     TextEditingController? surnameController,
     TextEditingController? emailController,
@@ -38,6 +41,7 @@ class SignUpState extends Equatable {
       status: status ?? this.status,
       allUserList: allUserList ?? this.allUserList,
       userModel: userModel ?? this.userModel,
+      imageFile: imageFile ?? this.imageFile,
       nameController: nameController ?? this.nameController,
       surnameController: surnameController ?? this.surnameController,
       emailController: emailController ?? this.emailController,
@@ -46,16 +50,14 @@ class SignUpState extends Equatable {
   }
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         status,
         allUserList,
         userModel,
+        imageFile,
+        nameController,
+        surnameController,
+        emailController,
+        passwordController,
       ];
-
-  void dispose() {
-    nameController.dispose();
-    surnameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-  }
 }

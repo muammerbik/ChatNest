@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
@@ -54,7 +55,12 @@ class UserModel {
     return <String, dynamic>{
       'userId': userId,
       'email': email,
-      'userName': userName ,
+      'userName': userName ??
+          email.substring(
+                0,
+                email.indexOf("@"),
+              ) +
+              randomNumber(),
       'surname': surname,
       'profileUrl': profileUrl ??
           "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png",
@@ -65,13 +71,14 @@ class UserModel {
     };
   }
 
- /*  factory UserModel.fromMap(Map<String, dynamic> map) {
+  factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
-      userId: map['userId'] as String,
-      email: map['email'] as String,
-      userName: map['userName'] as String,
-      surname: map['surname'] as String,
-      profileUrl: map['profileUrl'] as String,
+      userId: map['userId'] as String? ?? '',
+      email: map['email'] as String? ?? '',
+      userName: map['userName'] as String?,
+      surname: map['surname'] as String?,
+      profileUrl: map['profileUrl'] as String? ??
+          "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png",
       createdAt: map['createdAt'] != null
           ? (map['createdAt'] as Timestamp).toDate()
           : null,
@@ -79,23 +86,7 @@ class UserModel {
           ? (map['updatedAt'] as Timestamp).toDate()
           : null,
     );
-  } */
- factory UserModel.fromMap(Map<String, dynamic> map) {
-  return UserModel(
-    userId: map['userId'] as String? ?? '', 
-    email: map['email'] as String? ?? '',  
-    userName: map['userName'] as String?,
-    surname: map['surname'] as String?,
-    profileUrl: map['profileUrl'] as String? ??
-        "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png", 
-    createdAt: map['createdAt'] != null
-        ? (map['createdAt'] as Timestamp).toDate()
-        : null,
-    updatedAt: map['updatedAt'] != null
-        ? (map['updatedAt'] as Timestamp).toDate()
-        : null,
-  );
-}
+  }
 
   String toJson() => json.encode(toMap());
 
@@ -131,4 +122,8 @@ class UserModel {
         updatedAt.hashCode;
   }
 
+  String randomNumber() {
+    int generatedRandomNumber = Random().nextInt(999999);
+    return generatedRandomNumber.toString();
+  }
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatefulWidget {
   final String? labelText;
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String? Function(String?)? validator;
   final VoidCallback? onTap;
   final TextInputType? keyboardType;
@@ -15,23 +15,27 @@ class CustomTextFormField extends StatefulWidget {
   final void Function(String?)? onSaved;
   final bool obscureText;
   final Color? cursorColor;
+  final String? initialValue;
+  final bool? readOnly;
 
-  const CustomTextFormField({
-    super.key,
-    this.labelText,
-    required this.controller,
-    this.validator,
-    this.onTap,
-    this.keyboardType,
-    this.maxLength,
-    this.hintText,
-    this.maxLines,
-    this.onSaved,
-    this.borderColor,
-    this.cursorColor,
-    this.textCapitalization,
-    this.obscureText = false,
-  });
+  const CustomTextFormField(
+      {super.key,
+      this.labelText,
+      this.controller,
+      this.validator,
+      this.onTap,
+      this.keyboardType,
+      this.maxLength,
+      this.hintText,
+      this.maxLines,
+      this.onSaved,
+      this.borderColor,
+      this.cursorColor,
+      this.textCapitalization,
+      this.obscureText = false,
+      this.initialValue,
+      this.readOnly,
+      });
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
@@ -43,6 +47,8 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     return SizedBox(
       height: 56,
       child: TextFormField(
+        readOnly:widget.readOnly ?? false ,
+        initialValue: widget.initialValue,
         autofocus: false,
         cursorColor: widget.cursorColor ?? black,
         onSaved: widget.onSaved,

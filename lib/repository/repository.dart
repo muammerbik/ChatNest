@@ -48,9 +48,6 @@ class Repository implements AuthBase {
     return null;
   }
 
-
-  
-
 // oluşturulan kullanıcının id değerini firestora kaydetmek istiyorum. bu nedenle bu işlemi repoda gerçekleştirdim.
   @override
   Future<UserModel?> createUserWithSingIn(String email, String password) async {
@@ -70,6 +67,9 @@ class Repository implements AuthBase {
         await firebaseAuthService.emailAndPasswordWithSingIn(email, password);
     return await fireStoreService.readUser(usermodel!.userId);
   }
+
+
+
 
 
   Future<bool> updateUserName(String userId, String newUserName) async {

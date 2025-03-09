@@ -9,6 +9,7 @@ abstract class DbBase {
   Future<bool> updateUserName(String userId, String newUserName);
   Future<bool> updateProfilePhoto(String userId, String profilPhotoUrl);
   Future<List<UserModel>> getUserWithPagination(UserModel ensonGetirilenUser, int getirilecekElemanSayisi);
+  
   Stream<List<MesajModel>> getMessages(String currentUserId, String sohbetEdilenUserId);
   Future<bool> saveMessages(MesajModel kaydedilecekMesaj);
   Future<List<KonusmaModel>> getAllConversations(String userId);

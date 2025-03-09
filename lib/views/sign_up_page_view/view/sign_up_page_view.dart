@@ -32,11 +32,14 @@ class _SignUpPageViewState extends State<SignUpPageView> {
         builder: (context) {
           return BlocConsumer<SignUpBloc, SignUpState>(
             listener: (context, state) {
-              if (state.status == SignUpStatus.success)
+              if (state.status == SignUpStatus.success) {
                 Text("Sign up successful!");
+              }
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) => BottomBar()),
+                MaterialPageRoute(
+                  builder: (context) => BottomBar(),
+                ),
                 (route) => false,
               );
             },

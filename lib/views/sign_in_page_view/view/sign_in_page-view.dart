@@ -33,7 +33,9 @@ class _SignInPageViewState extends State<SignInPageView> {
               if (state.status == SignInStatus.success) {
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => BottomBar()),
+                  MaterialPageRoute(
+                    builder: (context) => BottomBar(),
+                  ),
                   (route) => false,
                 );
               }
