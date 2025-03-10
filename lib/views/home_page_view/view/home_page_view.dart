@@ -1,3 +1,4 @@
+import 'package:chat_menager/views/message_page_view/view/message_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -98,8 +99,19 @@ class _HomePageViewState extends State<HomePageView> {
                 }
 
                 final user = state.allUserList[index];
+                if (user.userId == state.latestUser!.userId) {
+                  return Container();
+                }
                 return GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute(
+                        builder: (context) => MessagePageView(
+                            currentUser: state.latestUser!,
+                            sohbetEdilenUser: user),
+                      ),
+                    );
+                  },
                   child: Card(
                     child: Container(
                       color: Colors.white,

@@ -81,6 +81,14 @@ class Repository implements AuthBase {
   }
 
 
+  Future<List<UserModel>> getUserWithPagination(
+      UserModel? ensonGetirilenUser, int getirilecekElemanSayisi) async {
+    List<UserModel> userList = await fireStoreService.getUserWithPagination(
+        ensonGetirilenUser, getirilecekElemanSayisi);
+    tumKullanicilarListesi.addAll(userList);
+    return userList;
+  }
+
 
 
   Stream<List<MesajModel>> getMessagers(
@@ -91,6 +99,9 @@ class Repository implements AuthBase {
   Future<bool> saveMessages(MesajModel kaydedilecekMesaj) async {
     return await fireStoreService.saveMessages(kaydedilecekMesaj);
   }
+
+
+  
 
   Future<List<KonusmaModel>> getAllConversations(String userId) async {
     DateTime zaman = await fireStoreService.showTime(userId);
@@ -126,13 +137,6 @@ class Repository implements AuthBase {
     return null;
   }
 
-  Future<List<UserModel>> getUserWithPagination(
-      UserModel? ensonGetirilenUser, int getirilecekElemanSayisi) async {
-    List<UserModel> userList = await fireStoreService.getUserWithPagination(
-        ensonGetirilenUser, getirilecekElemanSayisi);
-    tumKullanicilarListesi.addAll(userList);
-    return userList;
-  }
 
   Future<bool> chatDelete(
       String currentUserId, String sohbetEdilenUserId) async {

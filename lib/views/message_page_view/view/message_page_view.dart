@@ -1,45 +1,58 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:chat_menager/bloc/message_bloc/message_bloc.dart';
+import 'package:chat_menager/core/model/mesaj_model.dart';
+import 'package:chat_menager/core/model/user_model.dart';
 import 'package:chat_menager/components/custom_text/custom_text.dart';
 import 'package:chat_menager/components/custom_textFormField/custom_textForm_Field.dart';
-import 'package:chat_menager/constants/app_strings.dart';
-import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class MessagePageView extends StatefulWidget {
+  final UserModel currentUser;
+  final UserModel sohbetEdilenUser;
+
   const MessagePageView({
-    super.key,
-  });
+    Key? key,
+    required this.currentUser,
+    required this.sohbetEdilenUser,
+  }) : super(key: key);
 
   @override
   State<MessagePageView> createState() => _MessagePageViewState();
 }
 
 class _MessagePageViewState extends State<MessagePageView> {
-  TextEditingController textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+
+ /*  @override
+  void initState() {
+    super.initState();
+    // Mesajları getirmek için event tetikle
+    context.read<MessageBloc>().add(GetMessageEvent(
+          currentUserId: widget.currentUser.userId,
+          sohbetEdilenUserId: widget.sohbetEdilenUser.userId,
+        ));
+  } */
+  @override
+void initState() {
+  super.initState();
+  // Mesajları getirmek için event tetikle
+  context.read<MessageBloc>().add(GetMessageEvent(
+    currentUserId: widget.currentUser.userId,
+    sohbetEdilenUserId: widget.sohbetEdilenUser.userId,
+  ));
+}
+
 
   @override
   void dispose() {
-    textEditingController.dispose();
+    _textEditingController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
-
-  List<Map<String, String>> messages = [
-    {
-      "sender": "currentUser",
-      "message": "Hello, how are you?",
-      "time": "12:30"
-    },
-    {
-      "sender": "sohbetEdilenUser",
-      "message": "I'm good, thank you!",
-      "time": "12:32"
-    },
-    {
-      "sender": "currentUser",
-      "message": "Great to hear! What have you been up to?",
-      "time": "12:35"
-    },
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +63,10 @@ class _MessagePageViewState extends State<MessagePageView> {
         leading: Padding(
           padding: const EdgeInsets.only(left: 6),
           child: GestureDetector(
-            onTap: () {},
-            child: Icon(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: const Icon(
               Icons.arrow_back,
               color: Colors.black,
             ),
@@ -62,14 +77,12 @@ class _MessagePageViewState extends State<MessagePageView> {
             CircleAvatar(
               radius: 18,
               backgroundColor: Colors.grey.withAlpha(30),
-              backgroundImage: NetworkImage(
-                  "https://thumbs.dreamstime.com/b/macho-avec-le-regard-s%C3%A9v%C3%A8re-et-les-poils-du-visage-s%C3%A9rieux-concept-de-la-masculinit%C3%A9-confiance-l-homme-aux-cheveux-justes-sur-170135364.jpg"),
+              backgroundImage:
+                  NetworkImage(widget.sohbetEdilenUser.profileUrl!),
             ),
-            SizedBox(
-              width: 6,
-            ),
+            const SizedBox(width: 6),
             TextWidgets(
-              text: "Sevgi Pıtırcığımmm",
+              text: widget.sohbetEdilenUser.userName ?? 'Bilinmeyen Kullanıcı',
               size: 18,
               color: Colors.black,
               fontWeight: FontWeight.normal,
@@ -77,145 +90,182 @@ class _MessagePageViewState extends State<MessagePageView> {
           ],
         ),
       ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/message_background.jpg'),
-            fit: BoxFit.cover,
-            alignment: Alignment.center,
-          ),
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                reverse: true,
-                controller: _scrollController,
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  var message = messages[messages.length - 1 - index];
-                  return buildMessageBubble(message);
-                },
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: Container(
-                height: 72,
-                padding: EdgeInsets.only(bottom: 12, left: 10, top: 12),
-                color: Colors.transparent,
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: CustomTextFormField(
-                      controller: textEditingController,
-                      hintText: 'Mesaj',
-                      cursorColor: customDarkGreen,
-                    )),
-                    Container(
-                      height: 50,
-                      width: 50,
-                      margin: EdgeInsets.symmetric(horizontal: 8),
-                      child: FloatingActionButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0),
-                        ),
-                        elevation: 0,
-                        backgroundColor: customDarkGreen,
-                        child: const Icon(
-                          Icons.navigation,
-                          size: 35,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {
-                          if (textEditingController.text.trim().isNotEmpty) {
-                            setState(() {
-                              messages.add({
-                                "sender": "currentUser",
-                                "message": textEditingController.text,
-                                "time": "12:45"
-                              });
-                            });
-                            textEditingController.clear();
-                            _scrollController.animateTo(
-                              0, // Scroll to the bottom
-                              duration: const Duration(milliseconds: 10),
-                              curve: Curves.easeOut,
-                            );
-                          }
-                        },
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildMessageBubble(Map<String, String> message) {
-    bool fromMe = message['sender'] == 'currentUser';
-    String timeAndMinuteValue = message['time'] ?? '';
-
-    return Padding(
-      padding: EdgeInsets.only(
-        left: fromMe ? 45 : 10,
-        top: 10,
-        right: fromMe ? 10 : 45,
-      ),
-      child: Column(
-        crossAxisAlignment:
-            fromMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment:
-                fromMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+      body: BlocBuilder<MessageBloc, MessageState>(
+        builder: (context, state) {
+          return Column(
             children: [
-              if (!fromMe)
-                CircleAvatar(
-                  backgroundColor: Colors.grey.shade200,
-                  backgroundImage: NetworkImage(
-                      "https://thumbs.dreamstime.com/b/macho-avec-le-regard-s%C3%A9v%C3%A8re-et-les-poils-du-visage-s%C3%A9rieux-concept-de-la-masculinit%C3%A9-confiance-l-homme-aux-cheveux-justes-sur-170135364.jpg"),
+              Expanded(
+                child: ListView.builder(
+                  reverse: true,
+                  controller: _scrollController,
+                  itemCount: state.messageList.length,
+                  itemBuilder: (context, index) {
+                    final mesaj =
+                        state.messageList[state.messageList.length - 1 - index];
+                    return konusmaBalonlari(mesaj);
+                  },
                 ),
-              const SizedBox(width: 5),
-              Flexible(
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
                 child: Container(
-                  decoration: BoxDecoration(
-                    color: fromMe ? customLightGreen : customDarkGreen,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          message['message']!,
-                          style: TextStyle(fontSize: 16, color: Colors.black),
+                  height: 72,
+                  padding: const EdgeInsets.only(bottom: 12, left: 10, top: 12),
+                  color: Colors.transparent,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: CustomTextFormField(
+                          controller: _textEditingController,
+                          hintText: 'Mesaj',
+                          cursorColor: Colors.green,
                         ),
-                        SizedBox(height: 4),
-                        Text(
-                          timeAndMinuteValue,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                      Container(
+                        height: 50,
+                        width: 50,
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        child: FloatingActionButton(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                            ),
+                            elevation: 0,
+                            backgroundColor: Colors.green,
+                            child: const Icon(
+                              Icons.send,
+                              size: 25,
+                              color: Colors.white,
+                            ),
+                            onPressed: () {
+                              if (_textEditingController.text
+                                  .trim()
+                                  .isNotEmpty) {
+                                final kaydedilecekMesaj = MesajModel(
+                                  kimden: widget.currentUser.userId,
+                                  kime: widget.sohbetEdilenUser.userId,
+                                  bendenMi: true,
+                                  mesaj: _textEditingController.text.trim(),
+                                  date: Timestamp
+                                      .now(), // Mesajın tarihini kaydet
+                                );
+
+                                context.read<MessageBloc>().add(
+                                      SaveMessageEvent(
+                                          kaydedilecekMesaj: kaydedilecekMesaj),
+                                    );
+
+                                _textEditingController.clear();
+                                _scrollController.animateTo(
+                                  0,
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeOut,
+                                );
+                              }
+                            }),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ],
-          ),
-        ],
+          );
+        },
       ),
     );
+  }
+
+  Widget konusmaBalonlari(MesajModel oankiMesaj) {
+    final Color messageSender = Colors.green;
+    final Color messageField = Colors.blue;
+    final bool fromMe = oankiMesaj.bendenMi;
+
+    final timeAndMinuteValue =
+        showTimeAndMinute(oankiMesaj.date ?? Timestamp(1, 1));
+
+    if (fromMe) {
+      return Padding(
+        padding: EdgeInsets.only(
+          left: 45.w,
+          top: 10.h,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Flexible(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: messageSender,
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 10.w, vertical: 10.h),
+                      child: Text(
+                        oankiMesaj.mesaj,
+                        style: TextStyle(fontSize: 17.sp, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4.w),
+                  child: Text(timeAndMinuteValue),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.h, vertical: 5.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.grey.shade200,
+                  backgroundImage:
+                      NetworkImage(widget.sohbetEdilenUser.profileUrl!),
+                ),
+                const SizedBox(width: 5),
+                Flexible(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: messageField,
+                      borderRadius: BorderRadius.circular(16.r),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
+                      child: Text(
+                        oankiMesaj.mesaj,
+                        style: TextStyle(fontSize: 17.sp, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 4.w),
+                  child: Text(timeAndMinuteValue),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  String showTimeAndMinute(Timestamp? date) {
+    final formatter = DateFormat.Hm();
+    return formatter.format(date!.toDate());
   }
 }

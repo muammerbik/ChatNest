@@ -17,8 +17,6 @@ class MesajModel {
     required this.mesaj,
   });
 
- 
-
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'kimden': kimden,
@@ -33,7 +31,7 @@ class MesajModel {
     return MesajModel(
       kimden: map['kimden'] as String,
       kime: map['kime'] as String,
-      date: map['date'] ,
+      date: map['date'],
       bendenMi: map['bendenMi'] as bool,
       mesaj: map['mesaj'] as String,
     );
