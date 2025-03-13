@@ -1,3 +1,4 @@
+import 'package:chat_menager/constants/app_strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,25 +28,14 @@ class _MessagePageViewState extends State<MessagePageView> {
   final TextEditingController _textEditingController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
- /*  @override
+  @override
   void initState() {
     super.initState();
-    // Mesajları getirmek için event tetikle
     context.read<MessageBloc>().add(GetMessageEvent(
           currentUserId: widget.currentUser.userId,
           sohbetEdilenUserId: widget.sohbetEdilenUser.userId,
         ));
-  } */
-  @override
-void initState() {
-  super.initState();
-  // Mesajları getirmek için event tetikle
-  context.read<MessageBloc>().add(GetMessageEvent(
-    currentUserId: widget.currentUser.userId,
-    sohbetEdilenUserId: widget.sohbetEdilenUser.userId,
-  ));
-}
-
+  }
 
   @override
   void dispose() {
@@ -142,14 +132,18 @@ void initState() {
                               if (_textEditingController.text
                                   .trim()
                                   .isNotEmpty) {
+                                debugPrint("Current User ID: ${widget.currentUser.userId}");
+                                debugPrint("Sohbet Edilen User ID: ${widget.sohbetEdilenUser.userId}");
+                                
                                 final kaydedilecekMesaj = MesajModel(
                                   kimden: widget.currentUser.userId,
                                   kime: widget.sohbetEdilenUser.userId,
                                   bendenMi: true,
                                   mesaj: _textEditingController.text.trim(),
-                                  date: Timestamp
-                                      .now(), // Mesajın tarihini kaydet
+                                  date: Timestamp.now(),
                                 );
+
+                                debugPrint("Kaydedilecek Mesaj: ${kaydedilecekMesaj.toString()}");
 
                                 context.read<MessageBloc>().add(
                                       SaveMessageEvent(
@@ -177,17 +171,23 @@ void initState() {
   }
 
   Widget konusmaBalonlari(MesajModel oankiMesaj) {
-    final Color messageSender = Colors.green;
-    final Color messageField = Colors.blue;
-    final bool fromMe = oankiMesaj.bendenMi;
+    Color messageSender = purple;
+    Color messageField = indigo;
+    var fromMe = oankiMesaj.kimden == widget.currentUser.userId;
 
-    final timeAndMinuteValue =
-        showTimeAndMinute(oankiMesaj.date ?? Timestamp(1, 1));
+    var timeAndMinuteValue = "";
+    try {
+      timeAndMinuteValue =
+          showTimeAndMinute(oankiMesaj.date ?? Timestamp(1, 1));
+    } catch (e) {
+      debugPrint("mesaj gönderimde zaman hatası var $e");
+    }
 
     if (fromMe) {
       return Padding(
         padding: EdgeInsets.only(
           left: 45.w,
+          right: 8.w,
           top: 10.h,
         ),
         child: Column(
@@ -207,7 +207,7 @@ void initState() {
                           horizontal: 10.w, vertical: 10.h),
                       child: Text(
                         oankiMesaj.mesaj,
-                        style: TextStyle(fontSize: 17.sp, color: Colors.white),
+                        style: TextStyle(fontSize: 17.sp, color: white),
                       ),
                     ),
                   ),
@@ -231,11 +231,13 @@ void initState() {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.grey.shade200,
+                  backgroundColor: grey.shade200,
                   backgroundImage:
                       NetworkImage(widget.sohbetEdilenUser.profileUrl!),
                 ),
-                const SizedBox(width: 5),
+                const SizedBox(
+                  width: 5,
+                ),
                 Flexible(
                   child: Container(
                     decoration: BoxDecoration(
@@ -247,7 +249,7 @@ void initState() {
                           horizontal: 10, vertical: 10),
                       child: Text(
                         oankiMesaj.mesaj,
-                        style: TextStyle(fontSize: 17.sp, color: Colors.white),
+                        style: TextStyle(fontSize: 17.sp, color: white),
                       ),
                     ),
                   ),

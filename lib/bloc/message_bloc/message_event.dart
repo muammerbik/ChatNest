@@ -1,6 +1,6 @@
 part of 'message_bloc.dart';
 
- class MessageEvent extends Equatable {
+class MessageEvent extends Equatable {
   const MessageEvent();
 
   @override
@@ -11,8 +11,10 @@ class GetMessageEvent extends MessageEvent {
   final String currentUserId;
   final String sohbetEdilenUserId;
 
-  const GetMessageEvent(
-      {required this.currentUserId, required this.sohbetEdilenUserId});
+  const GetMessageEvent({
+    required this.currentUserId,
+    required this.sohbetEdilenUserId,
+  });
 
   @override
   List<Object> get props => [currentUserId, sohbetEdilenUserId];

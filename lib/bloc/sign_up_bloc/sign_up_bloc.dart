@@ -70,6 +70,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       );
 
       final userModel = await repository.currentUser();
+      debugPrint("Current user from repository: ${userModel?.toString()}");
       if (userModel != null) {
         emit(
           state.copyWith(
@@ -77,16 +78,18 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
             userModel: userModel,
           ),
         );
+        debugPrint("SignUpBloc state updated with user: ${state.userModel.toString()}");
       } else {
         emit(
           state.copyWith(status: SignUpStatus.error),
         );
+        debugPrint("Failed to get current user - userModel is null");
       }
     } catch (e) {
       emit(
         state.copyWith(status: SignUpStatus.error),
       );
-      debugPrint("Current User Hatası: $e");
+      debugPrint("Current User Error: $e");
     }
   }
 

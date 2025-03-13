@@ -11,17 +11,20 @@ class FirebaseAuthService implements AuthBase {
   Future<UserModel?> currentUser() async {
     try {
       User? user = firebaseAuth.currentUser;
+      debugPrint("Firebase Auth current user: ${user?.toString()}");
       if (user != null) {
         return _userFromFirebase(user);
       }
+      debugPrint("No current user in Firebase Auth");
       return null;
     } catch (e) {
-      debugPrint("Current user hatası: $e");
+      debugPrint("Current user error in FirebaseAuthService: $e");
       return null;
     }
   }
 
   UserModel? _userFromFirebase(User user) {
+    debugPrint("Creating UserModel from Firebase user: ${user.toString()}");
     return UserModel(
       userId: user.uid,
       email: user.email.toString(),

@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:chat_menager/bloc/home_bloc/home_bloc.dart';
 import 'package:chat_menager/components/custom_appBar/custom_appBar.dart';
 import 'package:chat_menager/components/custom_text/custom_text.dart';
+import 'package:chat_menager/bloc/sign_up_bloc/sign_up_bloc.dart';
 
 class HomePageView extends StatefulWidget {
   const HomePageView({super.key});
@@ -99,43 +100,61 @@ class _HomePageViewState extends State<HomePageView> {
                 }
 
                 final user = state.allUserList[index];
-                if (user.userId == state.latestUser!.userId) {
-                  return Container();
-                }
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context, rootNavigator: true).push(
-                      MaterialPageRoute(
-                        builder: (context) => MessagePageView(
-                            currentUser: state.latestUser!,
-                            sohbetEdilenUser: user),
+                return BlocBuilder<SignUpBloc, SignUpState>(
+                  builder: (context, signUpState) {
+                    if (signUpState.status == SignUpStatus.loading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    
+                    final currentUser = signUpState.userModel;
+                    if (user.userId == currentUser.userId) {
+                      return Container();
+                    }
+
+                    return GestureDetector(
+                      onTap: () {
+                        if (currentUser.userId.isNotEmpty) {
+                          debugPrint("Navigating with currentUser: ${currentUser.toString()}");
+                          debugPrint("Selected user: ${user.toString()}");
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MessagePageView(
+                                currentUser: currentUser,
+                                sohbetEdilenUser: user,
+                              ),
+                            ),
+                          );
+                        } else {
+                          debugPrint("Warning: currentUser.userId is empty!");
+                        }
+                      },
+                      child: Card(
+                        child: Container(
+                          color: Colors.white,
+                          child: ListTile(
+                            title: TextWidgets(
+                              text: user.userName ?? '',
+                              size: 16.sp,
+                              textAlign: TextAlign.start,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            subtitle: TextWidgets(
+                              text: user.email,
+                              size: 14.sp,
+                              textAlign: TextAlign.start,
+                              fontWeight: FontWeight.normal,
+                            ),
+                            leading: CircleAvatar(
+                              radius: 24,
+                              backgroundColor: Colors.grey.withAlpha(30),
+                              backgroundImage: NetworkImage(user.profileUrl ?? ''),
+                            ),
+                          ),
+                        ),
                       ),
                     );
                   },
-                  child: Card(
-                    child: Container(
-                      color: Colors.white,
-                      child: ListTile(
-                        title: TextWidgets(
-                          text: user.userName ?? '',
-                          size: 16.sp,
-                          textAlign: TextAlign.start,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        subtitle: TextWidgets(
-                          text: user.email,
-                          size: 14.sp,
-                          textAlign: TextAlign.start,
-                          fontWeight: FontWeight.normal,
-                        ),
-                        leading: CircleAvatar(
-                          radius: 24,
-                          backgroundColor: Colors.grey.withAlpha(30),
-                          backgroundImage: NetworkImage(user.profileUrl ?? ''),
-                        ),
-                      ),
-                    ),
-                  ),
                 );
               },
             ),
