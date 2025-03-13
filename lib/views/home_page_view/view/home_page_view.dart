@@ -105,7 +105,7 @@ class _HomePageViewState extends State<HomePageView> {
                     if (signUpState.status == SignUpStatus.loading) {
                       return const Center(child: CircularProgressIndicator());
                     }
-                    
+
                     final currentUser = signUpState.userModel;
                     if (user.userId == currentUser.userId) {
                       return Container();
@@ -114,7 +114,8 @@ class _HomePageViewState extends State<HomePageView> {
                     return GestureDetector(
                       onTap: () {
                         if (currentUser.userId.isNotEmpty) {
-                          debugPrint("Navigating with currentUser: ${currentUser.toString()}");
+                          debugPrint(
+                              "Navigating with currentUser: ${currentUser.toString()}");
                           debugPrint("Selected user: ${user.toString()}");
                           Navigator.push(
                             context,
@@ -145,11 +146,21 @@ class _HomePageViewState extends State<HomePageView> {
                               textAlign: TextAlign.start,
                               fontWeight: FontWeight.normal,
                             ),
-                            leading: CircleAvatar(
-                              radius: 24,
-                              backgroundColor: Colors.grey.withAlpha(30),
-                              backgroundImage: NetworkImage(user.profileUrl ?? ''),
-                            ),
+                            leading: user.profileUrl != null &&
+                                    user.profileUrl!.isNotEmpty
+                                ? CircleAvatar(
+                                    radius: 24,
+                                    backgroundColor: Colors.grey.withAlpha(30),
+                                    backgroundImage:
+                                        NetworkImage(user.profileUrl!),
+                                  )
+                                : CircleAvatar(
+                                    radius: 24,
+                                    backgroundColor: Colors.grey.withAlpha(30),
+                                    backgroundImage: AssetImage(
+                                      "assets/icons/user_avatar.png",
+                                    ),
+                                  ),
                           ),
                         ),
                       ),

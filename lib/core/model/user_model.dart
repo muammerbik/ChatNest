@@ -62,8 +62,7 @@ class UserModel {
               ) +
               randomNumber(),
       'surname': surname,
-      'profileUrl': profileUrl ??
-          "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png",
+      'profileUrl': profileUrl ,
       'createdAt':
           createdAt?.millisecondsSinceEpoch ?? FieldValue.serverTimestamp(),
       'updatedAt':
@@ -78,7 +77,7 @@ class UserModel {
       userName: map['userName'] as String? ??"",
       surname: map['surname'] as String? ?? "",
       profileUrl: map['profileUrl'] as String? ??
-          "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png",
+          "",
       createdAt: map['createdAt'] != null
           ? (map['createdAt'] as Timestamp).toDate()
           : null,
