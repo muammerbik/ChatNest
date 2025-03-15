@@ -10,15 +10,20 @@ sealed class HomeEvent extends Equatable {
 class GetAllUserListWithPaginationEvent extends HomeEvent {
   final UserModel? latestFetchedUser;
   final bool bringNewUser;
+  final String? currentUserId;
 
   const GetAllUserListWithPaginationEvent({
     required this.latestFetchedUser,
     required this.bringNewUser,
+    this.currentUserId,
   });
 
   @override
-  List<Object> get props =>
-      [latestFetchedUser ?? UserModel(email: "", userId: ""), bringNewUser];
+  List<Object> get props => [
+        latestFetchedUser ?? UserModel(email: "", userId: ""), 
+        bringNewUser,
+        currentUserId ?? "",
+      ];
 }
 
 class LoadMoreEvent extends HomeEvent {

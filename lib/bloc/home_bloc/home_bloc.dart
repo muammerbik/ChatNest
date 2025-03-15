@@ -9,6 +9,7 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final repository = locator<Repository>();
+  String? _currentUserId; // Mevcut kullanıcı ID'sini saklamak için
 
   HomeBloc()
       : super(
@@ -16,7 +17,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             status: HomeStatus.init,
             allUserList: [],
             hasMore: true,
-            pagePressPost: 10,
+            pagePressPost: 12,
             latestUser: null,
             isLoading: false,
           ),
@@ -36,6 +37,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     Emitter<HomeState> emit,
   ) async {
     try {
+      // Mevcut kullanıcı ID'sini sakla
+      if (event.currentUserId != null) {
+        _currentUserId = event.currentUserId;
+      }
+
       if (!event.bringNewUser) {
         emit(state.copyWith(status: HomeStatus.loading, isLoading: true));
       }
@@ -45,7 +51,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         state.pagePressPost,
       );
 
-      final addList = newList
+      // Mevcut kullanıcıyı filtrele
+      final filteredList =
+          newList.where((user) => user.userId != _currentUserId).toList();
+
+      final addList = filteredList
           .where(
             (newUser) => !state.allUserList
                 .any((currentUser) => currentUser.userId == newUser.userId),
@@ -81,6 +91,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         GetAllUserListWithPaginationEvent(
           latestFetchedUser: state.latestUser,
           bringNewUser: true,
+          currentUserId: _currentUserId,
         ),
       );
     } else {
@@ -103,9 +114,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
 
     add(
-      const GetAllUserListWithPaginationEvent(
+      GetAllUserListWithPaginationEvent(
         latestFetchedUser: null,
         bringNewUser: true,
+        currentUserId: _currentUserId,
       ),
     );
   }

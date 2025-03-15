@@ -1,11 +1,17 @@
-import 'package:chat_menager/constants/app_strings.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
+import 'package:chat_menager/constants/app_strings.dart';
+
 class EmptyPageView extends StatelessWidget {
-  const EmptyPageView({super.key});
+  final String? message;
+  const EmptyPageView({
+    Key? key,
+    this.message,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +31,7 @@ class EmptyPageView extends StatelessWidget {
               ),
             ),
             Text(
-              'Bu sayfada henüz bir veri\nyok gibi gözüküyor.',
+              message ?? 'Bu sayfada henüz bir veri\nyok gibi gözüküyor.',
               textAlign: TextAlign.center,
               style: GoogleFonts.ubuntu(
                 color: Colors.grey,

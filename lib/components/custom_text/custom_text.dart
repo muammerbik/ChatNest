@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class TextWidgets extends StatelessWidget {
   final String text;
@@ -25,10 +26,9 @@ class TextWidgets extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign ?? TextAlign.center,
-      style: TextStyle(
+      style: GoogleFonts.ubuntu(
         color: color ?? Colors.black,
         fontSize: size,
-        fontFamily: family ?? "poppins",
         fontWeight: fontWeight ?? FontWeight.bold,
       ),
     );
