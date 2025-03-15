@@ -9,7 +9,7 @@ class LoadingPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:white,
+      backgroundColor: white,
       body: Center(
         child: SizedBox(
           height: 250.h,
