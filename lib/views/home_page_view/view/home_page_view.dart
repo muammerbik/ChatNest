@@ -1,4 +1,6 @@
+import 'package:chat_menager/components/navigation_helper/navigation_halper.dart';
 import 'package:chat_menager/core/model/user_model.dart';
+import 'package:chat_menager/pages/message_page/message_page.dart';
 import 'package:chat_menager/views/empty_page_view.dart';
 import 'package:chat_menager/views/message_page_view/view/message_page_view.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +99,7 @@ class _HomePageViewState extends State<HomePageView> {
                             debugPrint(
                                 "Navigating with currentUser: ${currentUser.toString()}");
                             debugPrint("Selected user: ${user.toString()}");
-                            Navigator.push(
+                            /*   Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => MessagePageView(
@@ -105,7 +107,11 @@ class _HomePageViewState extends State<HomePageView> {
                                   sohbetEdilenUser: user,
                                 ),
                               ),
-                            );
+                            ); */
+                            Navigation.push(
+                                page: MessagePage(
+                                    currentUser: currentUser,
+                                    sohbetEdilenUser: user));
                           } else {
                             debugPrint("Warning: currentUser.userId is empty!");
                           }

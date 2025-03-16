@@ -1,4 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:chat_menager/components/navigation_helper/navigation_halper.dart';
+import 'package:chat_menager/pages/message_page/message_page.dart';
 import 'package:chat_menager/views/empty_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -87,7 +89,7 @@ class _ChatPageViewState extends State<ChatPageView> {
                     final currentUser =
                         context.read<SignUpBloc>().state.userModel;
                     final messageBloc = context.read<MessageBloc>();
-                    Navigator.of(context).push(
+                    /*  Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => MessagePageView(
                           currentUser: currentUser,
@@ -97,7 +99,14 @@ class _ChatPageViewState extends State<ChatPageView> {
                               profileUrl: chat.konusulanUserProfilUrl),
                         ),
                       ),
-                    );
+                    ); */
+                    Navigation.push(
+                        page: MessagePage(
+                            currentUser: currentUser,
+                            sohbetEdilenUser: UserModel.withIdAndProfileUrl(
+                                userId: chat.kimle_konusuyor,
+                                userName: chat.konusulanUserName,
+                                profileUrl: chat.konusulanUserProfilUrl)));
                     messageBloc.add(
                       GetMessageEvent(
                         currentUserId: currentUser.userId,
