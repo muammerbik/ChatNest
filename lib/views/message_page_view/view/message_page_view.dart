@@ -42,13 +42,13 @@ class _MessagePageViewState extends State<MessagePageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.white.withOpacity(0.8),
         elevation: 0,
-        leadingWidth: 16,
+        leadingWidth: 30,
         leading: Padding(
-          padding: const EdgeInsets.only(left: 12),
+          padding: const EdgeInsets.only(left: 8),
           child: IconButton(
             onPressed: () => Navigation.ofPop(),
             icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -56,9 +56,8 @@ class _MessagePageViewState extends State<MessagePageView> {
         ),
         title: Row(
           children: [
-            const SizedBox(width: 16),
             CircleAvatar(
-              radius: 18,
+              radius: 20,
               backgroundColor: Colors.grey.withAlpha(30),
               backgroundImage:
                   widget.sohbetEdilenUser.profileUrl?.isNotEmpty ?? false
@@ -76,28 +75,49 @@ class _MessagePageViewState extends State<MessagePageView> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              reverse: true,
-              controller: _scrollController,
-              itemCount: widget.messageList.length,
-              itemBuilder: (context, index) {
-                final mesaj =
-                    widget.messageList[widget.messageList.length - 1 - index];
-                return konusmaBalonlari(mesaj);
-              },
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey.shade50,
+          image: DecorationImage(
+            image: AssetImage("assets/images/message_background.jpg"),
+            fit: BoxFit.cover,
+            opacity: 0.8, // Adjust opacity to ensure text is readable
           ),
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                reverse: true,
+                controller: _scrollController,
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
+                itemCount: widget.messageList.length,
+                itemBuilder: (context, index) {
+                  final mesaj =
+                      widget.messageList[widget.messageList.length - 1 - index];
+                  return konusmaBalonlari(mesaj);
+                },
+              ),
             ),
-            child: Container(
-              height: 72,
-              padding: const EdgeInsets.only(bottom: 12, left: 16, top: 8),
-              color: Colors.transparent,
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.9),
+                borderRadius: BorderRadius.circular(24.r),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                  ),
+                ],
+              ),
+              margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom > 0 ? 8 : 20,
+                left: 16,
+                right: 8,
+                top: 12,
+              ),
               child: Row(
                 children: [
                   Expanded(
@@ -108,8 +128,8 @@ class _MessagePageViewState extends State<MessagePageView> {
                     ),
                   ),
                   Container(
-                    height: 50.h,
-                    width: 50.h,
+                    height: 45.h,
+                    width: 45.h,
                     margin: EdgeInsets.symmetric(horizontal: 8.w),
                     child: FloatingActionButton(
                       shape: RoundedRectangleBorder(
@@ -119,7 +139,7 @@ class _MessagePageViewState extends State<MessagePageView> {
                       backgroundColor: Colors.green,
                       child: Icon(
                         Icons.send,
-                        size: 25.sp,
+                        size: 22.sp,
                         color: Colors.white,
                       ),
                       onPressed: () {
@@ -158,15 +178,15 @@ class _MessagePageViewState extends State<MessagePageView> {
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget konusmaBalonlari(MesajModel oankiMesaj) {
-    Color messageSender = customLightGreen;
-    Color messageField = customDarkGreen;
+    Color messageSender = Colors.white;
+    Color messageField = Colors.green.shade600;
     var fromMe = oankiMesaj.kimden == widget.currentUser.userId;
 
     var timeAndMinuteValue = "";
@@ -180,88 +200,126 @@ class _MessagePageViewState extends State<MessagePageView> {
     if (fromMe) {
       return Padding(
         padding: EdgeInsets.only(
-          left: 45.w,
+          left: 60.w,
           right: 8.w,
-          top: 10.h,
+          top: 8.h,
+          bottom: 8.h,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Flexible(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: messageSender,
-                      borderRadius: BorderRadius.circular(16.r),
+            Container(
+              decoration: BoxDecoration(
+                color: messageSender.withOpacity(0.95),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16.r),
+                  topRight: Radius.circular(16.r),
+                  bottomLeft: Radius.circular(16.r),
+                  bottomRight: Radius.circular(4.r),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 1,
+                    blurRadius: 2,
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      oankiMesaj.mesaj,
+                      style: TextStyle(fontSize: 16.sp, color: Colors.black87),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 10.w, vertical: 10.h),
-                      child: Text(
-                        oankiMesaj.mesaj,
-                        style: TextStyle(fontSize: 17.sp, color: black),
+                    SizedBox(height: 4.h),
+                    Text(
+                      timeAndMinuteValue,
+                      style: TextStyle(
+                        fontSize: 11.sp,
+                        color: Colors.grey.shade600,
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 4.w),
-                  child: Text(timeAndMinuteValue),
-                ),
-              ],
+              ),
             ),
           ],
         ),
       );
     } else {
       return Padding(
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+        padding: EdgeInsets.only(
+          left: 8.w,
+          right: 60.w,
+          top: 8.h,
+          bottom: 8.h,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                widget.sohbetEdilenUser.profileUrl!.isNotEmpty
+                widget.sohbetEdilenUser.profileUrl?.isNotEmpty ?? false
                     ? CircleAvatar(
-                        radius: 18.r,
-                        backgroundColor: grey.shade200,
+                        radius: 16.r,
+                        backgroundColor: Colors.grey.shade200,
                         backgroundImage:
                             NetworkImage(widget.sohbetEdilenUser.profileUrl!),
                       )
                     : CircleAvatar(
-                        radius: 18.r,
+                        radius: 16.r,
                         backgroundColor: Colors.grey.withAlpha(30),
-                        backgroundImage: AssetImage(
+                        backgroundImage: const AssetImage(
                           "assets/icons/user_avatar.png",
                         ),
                       ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: messageField,
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    child: Row(
-                      children: [
-                        Text(
-                          oankiMesaj.mesaj,
-                          style: TextStyle(fontSize: 16.sp, color: white),
+                SizedBox(width: 8.w),
+                Flexible(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: messageField.withOpacity(0.95),
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16.r),
+                        topRight: Radius.circular(16.r),
+                        bottomLeft: Radius.circular(4.r),
+                        bottomRight: Radius.circular(16.r),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 1,
+                          blurRadius: 2,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: TextWidgets(
-                            text: timeAndMinuteValue,
-                            size: 10,
-                            color: grey,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        )
                       ],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12.w,
+                        vertical: 10.h,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            oankiMesaj.mesaj,
+                            style:
+                                TextStyle(fontSize: 16.sp, color: Colors.white),
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            timeAndMinuteValue,
+                            style: TextStyle(
+                              fontSize: 11.sp,
+                              color: Colors.white70,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

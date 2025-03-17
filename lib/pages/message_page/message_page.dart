@@ -39,10 +39,10 @@ class _MessagePageState extends State<MessagePage> {
               return BlocConsumer<MessageBloc, MessageState>(
                 listener: (context, state) {},
                 builder: (context, state) {
-                  if (state.status == MessageStatus.init ||
-                      state.status == MessageStatus.loading) {
+                  if (state.status == MessageStatus.init) {
                     return const LoadingPageView();
-                  } else if (state.status == MessageStatus.success) {
+                  } else if (state.status == MessageStatus.success || 
+                             state.status == MessageStatus.loading) {
                     return MessagePageView(
                       currentUser: widget.currentUser,
                       sohbetEdilenUser: widget.sohbetEdilenUser,

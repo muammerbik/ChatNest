@@ -46,13 +46,15 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
 
   Future<void> _onSaveMessageEvent(
       SaveMessageEvent event, Emitter<MessageState> emit) async {
-    emit(state.copyWith(status: MessageStatus.loading));
+    // Remove the loading state to prevent showing loading indicator
+    // emit(state.copyWith(status: MessageStatus.loading));
 
     try {
       final isSaved = await repository.saveMessages(event.kaydedilecekMesaj);
 
       if (isSaved) {
-        emit(state.copyWith(status: MessageStatus.success));
+        // Keep the current state, don't change to success as it will be updated by the stream
+        // emit(state.copyWith(status: MessageStatus.success));
       } else {
         emit(state.copyWith(status: MessageStatus.error));
       }
