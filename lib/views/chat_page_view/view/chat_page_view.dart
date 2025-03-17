@@ -1,5 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:chat_menager/components/navigation_helper/navigation_halper.dart';
+import 'package:chat_menager/constants/app_strings.dart';
 import 'package:chat_menager/pages/message_page/message_page.dart';
 import 'package:chat_menager/views/empty_page_view.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,6 @@ import 'package:chat_menager/components/custom_appBar/custom_appBar.dart';
 import 'package:chat_menager/components/custom_text/custom_text.dart';
 import 'package:chat_menager/core/model/konusma_model.dart';
 import 'package:chat_menager/core/model/user_model.dart';
-import 'package:chat_menager/views/message_page_view/view/message_page_view.dart';
 
 class ChatPageView extends StatefulWidget {
   final List<KonusmaModel> chatList;
@@ -28,16 +27,15 @@ class _ChatPageViewState extends State<ChatPageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: CustomAppBarView(
-        appBarTitle: 'Sohbetler',
-        centerTitle: false,
-        textColor: Colors.black,
+        appBarTitle: chats,
         actionIcons: [
           IconButton(
             onPressed: () {},
             icon: Icon(
               Icons.search,
-              color: Colors.black,
+              color: black,
             ),
           ),
         ],
@@ -51,22 +49,20 @@ class _ChatPageViewState extends State<ChatPageView> {
                   leading: chat.konusulanUserProfilUrl!.isNotEmpty
                       ? CircleAvatar(
                           radius: 24.r,
-                          backgroundColor: Colors.grey.withAlpha(30),
+                          backgroundColor: grey.withAlpha(30),
                           backgroundImage:
                               NetworkImage(chat.konusulanUserProfilUrl!),
                         )
                       : CircleAvatar(
                           radius: 24.r,
-                          backgroundColor: Colors.grey.withAlpha(30),
-                          backgroundImage: AssetImage(
-                            "assets/icons/user_avatar.png",
-                          ),
+                          backgroundColor: grey.withAlpha(30),
+                          backgroundImage: AssetImage(userImage),
                         ),
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextWidgets(
-                        text: chat.konusulanUserName!,
+                        text: _getShortenedText(chat.konusulanUserName!, 28),
                         size: 16.sp,
                         textAlign: TextAlign.start,
                         fontWeight: FontWeight.w500,
@@ -80,7 +76,7 @@ class _ChatPageViewState extends State<ChatPageView> {
                     ],
                   ),
                   subtitle: TextWidgets(
-                    text: chat.son_yollanan_mesaj,
+                    text: _getShortenedText(chat.son_yollanan_mesaj, 36),
                     size: 14.sp,
                     textAlign: TextAlign.start,
                     fontWeight: FontWeight.normal,
@@ -89,17 +85,7 @@ class _ChatPageViewState extends State<ChatPageView> {
                     final currentUser =
                         context.read<SignUpBloc>().state.userModel;
                     final messageBloc = context.read<MessageBloc>();
-                    /*  Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => MessagePageView(
-                          currentUser: currentUser,
-                          sohbetEdilenUser: UserModel.withIdAndProfileUrl(
-                              userName: chat.konusulanUserName,
-                              userId: chat.kimle_konusuyor,
-                              profileUrl: chat.konusulanUserProfilUrl),
-                        ),
-                      ),
-                    ); */
+
                     Navigation.push(
                         page: MessagePage(
                             currentUser: currentUser,
@@ -118,8 +104,14 @@ class _ChatPageViewState extends State<ChatPageView> {
               },
             )
           : EmptyPageView(
-              message: "Henüz bir sohbet başlatılmadı!",
+              message: chatsEmptyPageText,
             ),
     );
+  }
+
+  String _getShortenedText(String text, int maxLength) {
+    return text.length > maxLength
+        ? "${text.substring(0, maxLength)}..."
+        : text;
   }
 }

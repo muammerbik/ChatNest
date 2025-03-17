@@ -1,4 +1,6 @@
+import 'package:chat_menager/constants/app_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SplashPageView extends StatefulWidget {
   const SplashPageView({super.key});
@@ -11,12 +13,15 @@ class _SplashPageViewState extends State<SplashPageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: white,
       body: Center(
         child: SizedBox(
-          width: 128,
-          height: 128,
-          child: Image.asset("assets/icons/messenger.png"),
+          width: 156.w,
+          height: 156.h,
+          child: Image.asset(
+            appIcon,
+            color: customRed,
+          ),
         ),
       ),
     );

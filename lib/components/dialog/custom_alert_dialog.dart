@@ -1,13 +1,15 @@
+import 'package:chat_menager/constants/app_strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomCupertinoAlertDialog extends StatefulWidget {
   final String title;
   final String content;
   final VoidCallback yesButtonOnTap;
   final VoidCallback? noButtonOnTap;
-  final String? yesButonText;
-  final String? noButonText;
+  final String? yesButtonText;
+  final String? noButtonText;
 
   const CustomCupertinoAlertDialog({
     super.key,
@@ -15,8 +17,8 @@ class CustomCupertinoAlertDialog extends StatefulWidget {
     required this.content,
     required this.yesButtonOnTap,
     this.noButtonOnTap,
-    this.yesButonText,
-    this.noButonText,
+    this.yesButtonText,
+    this.noButtonText,
   });
 
   @override
@@ -28,32 +30,31 @@ class _CustomCupertinoAlertDialogState
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      
       title: Text(
         widget.title,
-        style: TextStyle(color: Colors.black, fontSize: 20),
+        style: TextStyle(color: black, fontSize: 20.sp),
       ),
       content: Text(
         widget.content,
-        style: TextStyle(fontSize: 15, color: Colors.black),
+        style: TextStyle(fontSize: 15.sp, color: black),
       ),
       actions: [
-        if (widget.noButtonOnTap != null && widget.noButonText != null)
+        if (widget.noButtonOnTap != null && widget.noButtonText != null)
           CupertinoDialogAction(
             onPressed: widget.noButtonOnTap,
             child: Text(
-              widget.noButonText ?? "cancel",
+              widget.noButtonText ?? cancel,
               style: TextStyle(
-                color: CupertinoColors.systemBlue,  
+                color: CupertinoColors.systemBlue,
               ),
             ),
           ),
         CupertinoDialogAction(
           onPressed: widget.yesButtonOnTap,
           child: Text(
-            widget.yesButonText ?? "ok",
+            widget.yesButtonText ?? "ok",
             style: TextStyle(
-              color: CupertinoColors.destructiveRed,  
+              color: CupertinoColors.destructiveRed,
             ),
           ),
         ),

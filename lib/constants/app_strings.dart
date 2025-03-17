@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 //Colors
@@ -13,33 +14,34 @@ const lightIndigo = Color(0xFFE8EAF6);
 const Color customRed = Color(0xFFFF5232);
 const Color customDarkGreen = Color(0xFF037c6c);
 const Color customLightGreen = Color(0xFFd5f0c1);
-
-
-
-
-
+const Color black54 = Colors.black54;
+const grey50 = Color(0xFFFAFAFA);
+const green = Colors.green;
+const black87 = Colors.black87;
+const white70 = Colors.white70;
+Color grey100 = const Color(0xFFF5F5F5);
 
 //Text
 const appName = "Chat App";
 const singIn = "Sing-in";
-const googlSsingIn = "Google Sing-in";
+const googleSingIn = "Google Sing-in";
 const faceSingIn = "Facebook Sing-in";
 const emailSingIn = "E mail Sing-in";
 const guestSingIn = "guest sign-in";
 const emailPasswordSingIn = "Login with email and password!";
-const loginn = "Login";
-const registerr = "Register";
+const login = "Login";
+const register = "Register";
 const emailText = "E mail";
 const enterEmail = "enter  E email";
 const passwordText = "Password";
 const enterPassword = "Enter password";
-const userLoginEror = "User login error!";
-const registerContenterrorText = "This user does not exist in the db";
+const userLoginError = "User login error!";
+const registerContentErrorText = "This user does not exist in the db";
 const ok = "OK";
 const loginError = "Login error!";
 const loginContentError = "This Email is already in use! Try different e-mail!";
 const enterMessage = "Enter message!";
-const profil = "Profile ";
+const profile = "Profile ";
 const exit = "exit";
 const takePicture = "take a picture";
 const selectFromGallery = "Select from Gallery";
@@ -54,7 +56,7 @@ const successfulTransaction = "Successful transaction";
 const changesSaved = "Changes saved";
 const usernameContentError =
     "UserName already exists, try a different username!";
-const profilephoto = "Profile image uploaded successfully!";
+const profilePhoto = "Profile image uploaded successfully!";
 const profilePhotoContent = "profile picture processing has been completed.";
 const delete = "Delete";
 const noChatFound = "No chat found!";
@@ -63,3 +65,54 @@ const users = "Users ";
 const noRegisterUserFound = "No registered users found!";
 const chatDelete = "Chat deleted successfully";
 const chaNotDelete = "An error occurred while deleting the chat";
+const onboardingTitle =
+    "Arkadaşlarınla güvenli ve\nhızlı bir şekilde sohbet et!";
+const onboardingSubTitle = "Mesajlaşmanın en kolay yolu";
+const signIn = "Giriş Yap";
+const signUp = "Hesap Oluştur";
+const signUpSubTitle = "Hemen kayıt ol ve mesajlaşmaya başla!";
+const name = "Name";
+const surname = "Surname";
+const email = "Email";
+const password = "Password";
+const googleSignUpText = "Google ile Kayıt Ol";
+const signUpText2 = "Hesabın var mı?";
+const signUpSnackBar = "Tüm alanların dolu olduğundan emin olun !";
+const welcome = "Hoş Geldiniz!";
+const signInSubTitle = "Hesabınıza giriş yapın";
+const signInSubTitle2 = "Hesabın yok mu?";
+const googleWithSignIn = "Google ile Giriş";
+const signInSnackBar = "Email ve şifre eksik ve boş olamaz!";
+const homeEmptyPageText = "Sohbet başlatmak için kullanıcı bulunamadı";
+const chatsEmptyPageText = "Henüz bir sohbet başlatılmadı!";
+const save = "Save";
+const cancel = "Cancel";
+const gallery = "Gallery";
+const camera = "Camera";
+const messageText = "Message";
+const settings = "Settings";
+const settingsAlertTitleText = "Çıkış yapmak istediğinize emin misiniz?";
+const settingsAlertSubtitleText = "Bu işlem geri alınmaz!";
+const rateUs = "Rate Us";
+const termOfUse = "Term of Use";
+const contactUs = "Contact Us";
+const recommendText = "Recommend to Friend";
+const signOut = "Sign Out";
+const deleteUser = "Delete user";
+const deleteUserTextTitle = "Hesabınızı silmek istediğinize emin misisniz?";
+
+//IMAGE
+const appIcon = "assets/icons/chat.png";
+const onboardingImage = "assets/images/messaging.png";
+const signUpImage = "assets/images/sign_up.png";
+const googleIcon = "assets/images/google.png";
+const signInImage = "assets/images/online_message.png";
+const userImage = "assets/icons/user_avatar.png";
+const cameraImage = "assets/images/camera.png";
+const messagePageBackGroundImage = "assets/images/message_background.jpg";
+const rateUsIcon = "assets/icons/star.png";
+const termOfUseIcon = "assets/icons/contract.png";
+const contactUsIcon = "assets/icons/contact.png";
+const recommendIcon = "assets/icons/share.png";
+const signOutIcon = "assets/icons/exit.png";
+const deleteUserIcon = "assets/icons/delete.png";

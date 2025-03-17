@@ -1,8 +1,8 @@
 import 'package:chat_menager/components/navigation_helper/navigation_halper.dart';
+import 'package:chat_menager/constants/app_strings.dart';
 import 'package:chat_menager/core/model/user_model.dart';
 import 'package:chat_menager/pages/message_page/message_page.dart';
 import 'package:chat_menager/views/empty_page_view.dart';
-import 'package:chat_menager/views/message_page_view/view/message_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -52,15 +52,13 @@ class _HomePageViewState extends State<HomePageView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBarView(
-        appBarTitle: 'Kullanıcılar',
-        centerTitle: false,
-        textColor: Colors.black,
+        appBarTitle: users,
         actionIcons: [
           IconButton(
             onPressed: () {},
             icon: const Icon(
               Icons.search,
-              color: Colors.black,
+              color: black,
             ),
           ),
         ],
@@ -99,25 +97,18 @@ class _HomePageViewState extends State<HomePageView> {
                             debugPrint(
                                 "Navigating with currentUser: ${currentUser.toString()}");
                             debugPrint("Selected user: ${user.toString()}");
-                            /*   Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MessagePageView(
-                                  currentUser: currentUser,
-                                  sohbetEdilenUser: user,
-                                ),
-                              ),
-                            ); */
+
                             Navigation.push(
-                                page: MessagePage(
-                                    currentUser: currentUser,
-                                    sohbetEdilenUser: user));
+                              page: MessagePage(
+                                  currentUser: currentUser,
+                                  sohbetEdilenUser: user),
+                            );
                           } else {
                             debugPrint("Warning: currentUser.userId is empty!");
                           }
                         },
                         child: Container(
-                          color: Colors.white,
+                          color: white,
                           child: ListTile(
                             title: TextWidgets(
                               text: user.userName ?? '',
@@ -129,15 +120,15 @@ class _HomePageViewState extends State<HomePageView> {
                                     user.profileUrl!.isNotEmpty
                                 ? CircleAvatar(
                                     radius: 24.r,
-                                    backgroundColor: Colors.grey.withAlpha(30),
+                                    backgroundColor: grey.withAlpha(30),
                                     backgroundImage:
                                         NetworkImage(user.profileUrl!),
                                   )
                                 : CircleAvatar(
                                     radius: 24.r,
-                                    backgroundColor: Colors.grey.withAlpha(30),
+                                    backgroundColor: grey.withAlpha(30),
                                     backgroundImage: AssetImage(
-                                      "assets/icons/user_avatar.png",
+                                      userImage,
                                     ),
                                   ),
                           ),
@@ -149,7 +140,7 @@ class _HomePageViewState extends State<HomePageView> {
               ),
             )
           : EmptyPageView(
-              message: "Sohbet başlatmak için kullanıcı bulunamadı",
+              message: homeEmptyPageText,
             ),
     );
   }

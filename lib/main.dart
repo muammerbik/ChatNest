@@ -1,6 +1,8 @@
 import 'package:chat_menager/bloc/chat_bloc/chat_bloc.dart';
 import 'package:chat_menager/bloc/home_bloc/home_bloc.dart';
 import 'package:chat_menager/bloc/message_bloc/message_bloc.dart';
+import 'package:chat_menager/bloc/settings_bloc/settings_bloc.dart';
+import 'package:chat_menager/bloc/sign_in_bloc/sign_in_bloc.dart';
 import 'package:chat_menager/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:chat_menager/components/navigation_helper/navigation_halper.dart';
 import 'package:chat_menager/constants/app_strings.dart';
@@ -24,20 +26,31 @@ void main() async {
     statusBarIconBrightness: Brightness.dark,
   ));
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(MultiBlocProvider(providers: [
-    BlocProvider(
-      create: (context) => HomeBloc(),
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => HomeBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ChatBloc(),
+        ),
+        BlocProvider(
+          create: (context) => MessageBloc(),
+        ),
+        BlocProvider(
+          create: (context) => SignUpBloc(),
+        ),
+        BlocProvider(
+          create: (context) => SignInBloc(),
+        ),
+        BlocProvider(
+          create: (context) => SettingsBloc(),
+        ),
+      ],
+      child: MyApp(),
     ),
-    BlocProvider(
-      create: (context) => ChatBloc(),
-    ),
-    BlocProvider(
-      create: (context) => MessageBloc(),
-    ),
-    BlocProvider(
-      create: (context) => SignUpBloc(),
-    )
-  ], child: MyApp()));
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -56,12 +69,12 @@ class MyApp extends StatelessWidget {
           navigatorKey: Navigation.navigationKey,
           theme: ThemeData(
             appBarTheme: const AppBarTheme(
-              backgroundColor: Colors.white,
+              backgroundColor: white,
             ),
-            scaffoldBackgroundColor: Colors.white,
+            scaffoldBackgroundColor: white,
             useMaterial3: true,
-            colorScheme: ColorScheme.fromSeed(seedColor: black)
-                .copyWith(surface: Colors.white),
+            colorScheme:
+                ColorScheme.fromSeed(seedColor: black).copyWith(surface: white),
           ),
           home: StarterPage(),
         );

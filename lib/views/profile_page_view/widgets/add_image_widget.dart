@@ -20,7 +20,9 @@ class _AddImageWidgetsState extends State<AddImageWidgets> {
       listener: (context, state) {
         if (state.status == SignUpStatus.error) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Resim seçilirken bir hata oluştu")),
+            const SnackBar(
+              content: Text("Resim seçilirken bir hata oluştu"),
+            ),
           );
         }
       },
@@ -59,7 +61,7 @@ class _AddImageWidgetsState extends State<AddImageWidgets> {
                           )
                         : Padding(
                             padding: EdgeInsets.symmetric(horizontal: 42.w),
-                            child: Image.asset("assets/images/camera.png"),
+                            child: Image.asset(cameraImage),
                           ),
                   ),
                 ),
@@ -79,7 +81,7 @@ class _AddImageWidgetsState extends State<AddImageWidgets> {
                       padding:
                           EdgeInsets.symmetric(vertical: 8.h, horizontal: 8.w),
                       child: Image.asset(
-                        "assets/images/camera.png",
+                        cameraImage,
                         color: white,
                         height: 24.h,
                         fit: BoxFit.contain,

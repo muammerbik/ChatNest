@@ -17,37 +17,40 @@ class CustomTextFormField extends StatefulWidget {
   final Color? cursorColor;
   final String? initialValue;
   final bool? readOnly;
+  final bool isPasswordField;
 
-  const CustomTextFormField(
-      {super.key,
-      this.labelText,
-      this.controller,
-      this.validator,
-      this.onTap,
-      this.keyboardType,
-      this.maxLength,
-      this.hintText,
-      this.maxLines,
-      this.onSaved,
-      this.borderColor,
-      this.cursorColor,
-      this.textCapitalization,
-      this.obscureText = false,
-      this.initialValue,
-      this.readOnly,
-      });
+  const CustomTextFormField({
+    super.key,
+    this.labelText,
+    this.controller,
+    this.validator,
+    this.onTap,
+    this.isPasswordField = false,
+    this.keyboardType,
+    this.maxLength,
+    this.hintText,
+    this.maxLines,
+    this.onSaved,
+    this.borderColor,
+    this.cursorColor,
+    this.textCapitalization,
+    this.obscureText = false,
+    this.initialValue,
+    this.readOnly,
+  });
 
   @override
   State<CustomTextFormField> createState() => _CustomTextFormFieldState();
 }
 
 class _CustomTextFormFieldState extends State<CustomTextFormField> {
+  bool _isVisible = false;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 56,
       child: TextFormField(
-        readOnly:widget.readOnly ?? false ,
+        readOnly: widget.readOnly ?? false,
         initialValue: widget.initialValue,
         autofocus: false,
         cursorColor: widget.cursorColor ?? black,
@@ -61,33 +64,45 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         onTap: widget.onTap,
         maxLines: widget.maxLines ?? 1,
         decoration: InputDecoration(
-          filled: true,
-          fillColor: Colors.grey.shade100,
-          labelText: widget.labelText,
-          hintText: widget.hintText,
-          contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-          border: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 1),
-            borderRadius: BorderRadius.circular(24),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 1),
-            borderRadius: BorderRadius.circular(24),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 1),
-            borderRadius: BorderRadius.circular(24),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 1),
-            borderRadius: BorderRadius.circular(24),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.black, width: 1),
-            borderRadius: BorderRadius.circular(24),
-          ),
-        ),
-        obscureText: widget.obscureText,
+            filled: true,
+            fillColor: Colors.grey.shade100,
+            labelText: widget.labelText,
+            hintText: widget.hintText,
+            contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black, width: 1),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black, width: 1),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black, width: 1),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black, width: 1),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Colors.black, width: 1),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            suffixIcon: widget.isPasswordField
+                ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _isVisible = !_isVisible;
+                      });
+                    },
+                    icon: Icon(
+                      _isVisible ? Icons.visibility : Icons.visibility_off,
+                      color: black,
+                    ),
+                  )
+                : null),
+        obscureText: widget.isPasswordField && !_isVisible,
       ),
     );
   }

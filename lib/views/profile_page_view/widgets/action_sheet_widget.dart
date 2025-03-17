@@ -1,3 +1,4 @@
+import 'package:chat_menager/components/navigation_helper/navigation_halper.dart';
 import 'package:chat_menager/constants/app_strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,12 +21,12 @@ class ActionSheet extends StatelessWidget {
           color: white,
           child: CupertinoActionSheetAction(
             child: Text(
-              "Camera",
+              camera,
               style: TextStyle(fontSize: 20.sp),
             ),
             onPressed: () {
               cameraTapped();
-              Navigator.of(context).pop();
+              Navigation.ofPop();
             },
           ),
         ),
@@ -33,12 +34,12 @@ class ActionSheet extends StatelessWidget {
           color: white,
           child: CupertinoActionSheetAction(
             child: Text(
-              "Gallery",
+              gallery,
               style: TextStyle(fontSize: 20.sp),
             ),
             onPressed: () {
               galleryTapped();
-              Navigator.pop(context);
+              Navigation.ofPop();
             },
           ),
         ),
@@ -49,7 +50,7 @@ class ActionSheet extends StatelessWidget {
         onPressed: () {
           Navigator.pop(context);
         },
-        child: Text("Cancel"),
+        child: Text(cancel),
       ),
     );
   }

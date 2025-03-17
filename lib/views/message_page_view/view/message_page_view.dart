@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:chat_menager/constants/app_strings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,7 +9,6 @@ import 'package:chat_menager/bloc/message_bloc/message_bloc.dart';
 import 'package:chat_menager/components/custom_text/custom_text.dart';
 import 'package:chat_menager/components/custom_textFormField/custom_textForm_Field.dart';
 import 'package:chat_menager/components/navigation_helper/navigation_halper.dart';
-import 'package:chat_menager/constants/app_strings.dart';
 import 'package:chat_menager/core/model/mesaj_model.dart';
 import 'package:chat_menager/core/model/user_model.dart';
 
@@ -29,12 +29,12 @@ class MessagePageView extends StatefulWidget {
 }
 
 class _MessagePageViewState extends State<MessagePageView> {
-  final TextEditingController _textEditingController = TextEditingController();
+  final TextEditingController messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
   @override
   void dispose() {
-    _textEditingController.dispose();
+    messageController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -44,7 +44,7 @@ class _MessagePageViewState extends State<MessagePageView> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        backgroundColor: Colors.white.withOpacity(0.8),
+        backgroundColor: white,
         elevation: 0,
         leadingWidth: 30,
         leading: Padding(
@@ -57,19 +57,17 @@ class _MessagePageViewState extends State<MessagePageView> {
         title: Row(
           children: [
             CircleAvatar(
-              radius: 20,
-              backgroundColor: Colors.grey.withAlpha(30),
+              radius: 20.h,
+              backgroundColor: white,
               backgroundImage:
                   widget.sohbetEdilenUser.profileUrl?.isNotEmpty ?? false
                       ? NetworkImage(widget.sohbetEdilenUser.profileUrl!)
-                      : const AssetImage("assets/icons/user_avatar.png")
-                          as ImageProvider,
+                      : const AssetImage(userImage) as ImageProvider,
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             TextWidgets(
               text: widget.sohbetEdilenUser.userName ?? '',
-              size: 18,
-              color: Colors.black,
+              size: 18.sp,
               fontWeight: FontWeight.w500,
             ),
           ],
@@ -77,11 +75,11 @@ class _MessagePageViewState extends State<MessagePageView> {
       ),
       body: Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade50,
+          color: grey50,
           image: DecorationImage(
-            image: AssetImage("assets/images/message_background.jpg"),
+            image: AssetImage(messagePageBackGroundImage),
             fit: BoxFit.cover,
-            opacity: 0.8, // Adjust opacity to ensure text is readable
+            opacity: 0.5,
           ),
         ),
         child: Column(
@@ -101,49 +99,39 @@ class _MessagePageViewState extends State<MessagePageView> {
             ),
             Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.9),
-                borderRadius: BorderRadius.circular(24.r),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    spreadRadius: 1,
-                    blurRadius: 3,
-                  ),
-                ],
+                color: transparent,
               ),
-              margin: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
               padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom > 0 ? 8 : 20,
                 left: 16,
                 right: 8,
-                top: 12,
+                top: 6,
               ),
               child: Row(
                 children: [
                   Expanded(
                     child: CustomTextFormField(
-                      controller: _textEditingController,
-                      hintText: 'Mesaj',
-                      cursorColor: Colors.green,
+                      controller: messageController,
+                      hintText: messageText,
                     ),
                   ),
                   Container(
-                    height: 45.h,
-                    width: 45.h,
+                    height: 52.h,
+                    width: 52.h,
                     margin: EdgeInsets.symmetric(horizontal: 8.w),
                     child: FloatingActionButton(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.0),
+                        borderRadius: BorderRadius.circular(24.r),
                       ),
                       elevation: 0,
-                      backgroundColor: Colors.green,
+                      backgroundColor: green,
                       child: Icon(
                         Icons.send,
                         size: 22.sp,
-                        color: Colors.white,
+                        color: white,
                       ),
                       onPressed: () {
-                        if (_textEditingController.text.trim().isNotEmpty) {
+                        if (messageController.text.trim().isNotEmpty) {
                           debugPrint(
                               "Current User ID: ${widget.currentUser.userId}");
                           debugPrint(
@@ -153,7 +141,7 @@ class _MessagePageViewState extends State<MessagePageView> {
                             kimden: widget.currentUser.userId,
                             kime: widget.sohbetEdilenUser.userId,
                             bendenMi: true,
-                            mesaj: _textEditingController.text.trim(),
+                            mesaj: messageController.text.trim(),
                             date: Timestamp.now(),
                           );
 
@@ -165,7 +153,7 @@ class _MessagePageViewState extends State<MessagePageView> {
                                     kaydedilecekMesaj: kaydedilecekMesaj),
                               );
 
-                          _textEditingController.clear();
+                          messageController.clear();
                           _scrollController.animateTo(
                             0,
                             duration: const Duration(milliseconds: 300),
@@ -185,8 +173,8 @@ class _MessagePageViewState extends State<MessagePageView> {
   }
 
   Widget konusmaBalonlari(MesajModel oankiMesaj) {
-    Color messageSender = Colors.white;
-    Color messageField = Colors.green.shade600;
+    Color messageSender = white;
+    Color messageField = green.shade600;
     var fromMe = oankiMesaj.kimden == widget.currentUser.userId;
 
     var timeAndMinuteValue = "";
@@ -219,7 +207,7 @@ class _MessagePageViewState extends State<MessagePageView> {
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
+                    color: grey.withOpacity(0.2),
                     spreadRadius: 1,
                     blurRadius: 2,
                   ),
@@ -232,15 +220,13 @@ class _MessagePageViewState extends State<MessagePageView> {
                   children: [
                     Text(
                       oankiMesaj.mesaj,
-                      style: TextStyle(fontSize: 16.sp, color: Colors.black87),
+                      style: TextStyle(fontSize: 16.sp, color: black87),
                     ),
                     SizedBox(height: 4.h),
-                    Text(
-                      timeAndMinuteValue,
-                      style: TextStyle(
-                        fontSize: 11.sp,
-                        color: Colors.grey.shade600,
-                      ),
+                    TextWidgets(
+                      text: timeAndMinuteValue,
+                      size: 11.sp,
+                      color: black54,
                     ),
                   ],
                 ),
@@ -267,15 +253,15 @@ class _MessagePageViewState extends State<MessagePageView> {
                 widget.sohbetEdilenUser.profileUrl?.isNotEmpty ?? false
                     ? CircleAvatar(
                         radius: 16.r,
-                        backgroundColor: Colors.grey.shade200,
+                        backgroundColor: grey50,
                         backgroundImage:
                             NetworkImage(widget.sohbetEdilenUser.profileUrl!),
                       )
                     : CircleAvatar(
                         radius: 16.r,
-                        backgroundColor: Colors.grey.withAlpha(30),
+                        backgroundColor: white,
                         backgroundImage: const AssetImage(
-                          "assets/icons/user_avatar.png",
+                          userImage,
                         ),
                       ),
                 SizedBox(width: 8.w),
@@ -311,12 +297,10 @@ class _MessagePageViewState extends State<MessagePageView> {
                                 TextStyle(fontSize: 16.sp, color: Colors.white),
                           ),
                           SizedBox(height: 4.h),
-                          Text(
-                            timeAndMinuteValue,
-                            style: TextStyle(
-                              fontSize: 11.sp,
-                              color: Colors.white70,
-                            ),
+                          TextWidgets(
+                            text: timeAndMinuteValue,
+                            size: 11.sp,
+                            color: white70,
                           ),
                         ],
                       ),

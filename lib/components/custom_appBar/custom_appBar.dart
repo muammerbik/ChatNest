@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:chat_menager/components/custom_text/custom_text.dart';
+import 'package:chat_menager/constants/app_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomAppBarView extends StatefulWidget implements PreferredSizeWidget {
   final String? appBarTitle;
@@ -35,14 +37,15 @@ class _CustomAppBarViewState extends State<CustomAppBarView> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        surfaceTintColor: Colors.white,
-        centerTitle: widget.centerTitle,
-        backgroundColor: widget.appBarColor ?? Colors.white,
+        surfaceTintColor: white,
+        centerTitle: widget.centerTitle ?? false,
+        leadingWidth: 30,
+        backgroundColor: widget.appBarColor ?? white,
         leading: widget.leadingIcon,
         title: TextWidgets(
           text: widget.appBarTitle!,
-          size: 24,
-          color: widget.textColor ?? Colors.black,
+          size: 24.sp,
+          color: widget.textColor ?? black,
         ),
         actions: widget.actionIcons ?? []);
   }
