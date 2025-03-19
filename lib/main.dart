@@ -30,6 +30,12 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(
+          create: (context) => SignUpBloc(),
+        ),
+        BlocProvider(
+          create: (context) => SignInBloc(),
+        ),
+        BlocProvider(
           create: (context) => HomeBloc(),
         ),
         BlocProvider(
@@ -37,12 +43,6 @@ void main() async {
         ),
         BlocProvider(
           create: (context) => MessageBloc(),
-        ),
-        BlocProvider(
-          create: (context) => SignUpBloc(),
-        ),
-        BlocProvider(
-          create: (context) => SignInBloc(),
         ),
         BlocProvider(
           create: (context) => SettingsBloc(),

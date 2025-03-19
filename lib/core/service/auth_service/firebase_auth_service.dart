@@ -104,4 +104,6 @@ class FirebaseAuthService implements AuthBase {
         email: email, password: password);
     return _userFromFirebase(userCredential.user!);
   }
+
+  
 }
