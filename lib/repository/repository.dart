@@ -142,4 +142,25 @@ class Repository implements AuthBase {
       String currentUserId, String sohbetEdilenUserId) async {
     return await fireStoreService.chatDelete(currentUserId, sohbetEdilenUserId);
   }
+
+  @override
+  Future<bool> deleteUser() async {
+    try {
+      // Get current user
+      UserModel? user = await currentUser();
+      if (user == null) return false;
+
+      // Delete user data from Firestore
+      await fireStoreService.deleteUserData(user.userId);
+
+      // Delete user from Firebase Auth
+      bool authResult = await firebaseAuthService.deleteUser();
+      if (!authResult) return false;
+
+      return true;
+    } catch (e) {
+      debugPrint("Delete user error in Repository: $e");
+      return false;
+    }
+  }
 }

@@ -18,6 +18,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           ),
         ) {
     on<SignOutEvent>(settingsSignOut);
+    on<DeleteUserEvent>(deleteUser);
   }
 
   Future<void> settingsSignOut(
@@ -44,6 +45,33 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         state.copyWith(status: SettingsStatus.error),
       );
       debugPrint("Çıkış yapılırken bir hata oluştu: $e");
+    }
+  }
+
+  Future<void> deleteUser(
+      DeleteUserEvent event, Emitter<SettingsState> emit) async {
+    try {
+      emit(
+        state.copyWith(status: SettingsStatus.loading),
+      );
+
+      final result = await repository.deleteUser();
+
+      if (result) {
+        emit(
+          state.copyWith(status: SettingsStatus.success, userModel: null),
+        );
+      } else {
+        emit(
+          state.copyWith(status: SettingsStatus.error),
+        );
+        debugPrint("Kullanıcı silinirken bir hata oluştu");
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(status: SettingsStatus.error),
+      );
+      debugPrint("Kullanıcı silinirken bir hata oluştu: $e");
     }
   }
 }

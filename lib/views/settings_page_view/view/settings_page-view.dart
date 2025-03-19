@@ -6,6 +6,7 @@ import 'package:chat_menager/components/dialog/custom_snackBar.dart';
 import 'package:chat_menager/components/navigation_helper/navigation_halper.dart';
 import 'package:chat_menager/constants/app_strings.dart';
 import 'package:chat_menager/views/loading_page_view/loading_page.dart';
+import 'package:chat_menager/views/onboarding_view/view/onboarding_page_view.dart';
 import 'package:chat_menager/views/settings_page_view/widgets/custom_settings_button.dart';
 import 'package:chat_menager/views/sign_in_page_view/view/sign_in_page-view.dart';
 import 'package:flutter/cupertino.dart';
@@ -127,7 +128,13 @@ class _SettingsPageViewState extends State<SettingsPageView> {
                                     Navigation.ofPop();
                                   },
                                   noButtonText: cancel,
-                                  yesButtonOnTap: () {},
+                                  yesButtonOnTap: () {
+                                    context
+                                        .read<SettingsBloc>()
+                                        .add(DeleteUserEvent());
+                                    Navigation.pushAndRemoveAll(
+                                        page: OnboardingPageView());
+                                  },
                                   yesButtonText: ok,
                                 );
                               },

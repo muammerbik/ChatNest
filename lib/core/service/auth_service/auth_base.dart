@@ -1,4 +1,3 @@
-
 import 'package:chat_menager/core/model/user_model.dart';
 
 abstract class AuthBase {
@@ -8,4 +7,5 @@ abstract class AuthBase {
   Future<UserModel?> googleWithSingIn();
   Future<UserModel?> createUserWithSingIn(String email, String password);
   Future<UserModel?> emailAndPasswordWithSingIn(String email, String password);
+  Future<bool> deleteUser();
 }

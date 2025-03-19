@@ -8,3 +8,5 @@ sealed class SettingsEvent extends Equatable {
 }
 
 class SignOutEvent extends SettingsEvent {}
+
+class DeleteUserEvent extends SettingsEvent {}

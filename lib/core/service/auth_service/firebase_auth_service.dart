@@ -105,5 +105,18 @@ class FirebaseAuthService implements AuthBase {
     return _userFromFirebase(userCredential.user!);
   }
 
-  
+  @override
+  Future<bool> deleteUser() async {
+    try {
+      User? user = firebaseAuth.currentUser;
+      if (user != null) {
+        await user.delete();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      debugPrint("Delete user error in FirebaseAuthService: $e");
+      return false;
+    }
+  }
 }

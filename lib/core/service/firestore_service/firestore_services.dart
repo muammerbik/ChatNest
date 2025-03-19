@@ -226,4 +226,62 @@ class FirestoreServices implements DbBase {
       return false;
     }
   }
+
+  Future<void> deleteUserData(String userId) async {
+    try {
+      // Delete user's profile data
+      await firestore.collection("users").doc(userId).delete();
+
+      // Delete user's conversations
+      var conversationsSnapshot = await firestore
+          .collection("konusanlar")
+          .where("konusma_sahibi", isEqualTo: userId)
+          .get();
+
+      for (var doc in conversationsSnapshot.docs) {
+        String chatId = doc.id;
+        
+        // Delete messages in the conversation
+        var messagesSnapshot = await firestore
+            .collection("konusanlar")
+            .doc(chatId)
+            .collection("mesajlar")
+            .get();
+            
+        for (var messageDoc in messagesSnapshot.docs) {
+          await messageDoc.reference.delete();
+        }
+
+        // Delete the conversation document
+        await doc.reference.delete();
+      }
+
+      // Delete conversations where user is the recipient
+      var recipientConversationsSnapshot = await firestore
+          .collection("konusanlar")
+          .where("kimle_konusuyor", isEqualTo: userId)
+          .get();
+
+      for (var doc in recipientConversationsSnapshot.docs) {
+        String chatId = doc.id;
+        
+        // Delete messages in the conversation
+        var messagesSnapshot = await firestore
+            .collection("konusanlar")
+            .doc(chatId)
+            .collection("mesajlar")
+            .get();
+            
+        for (var messageDoc in messagesSnapshot.docs) {
+          await messageDoc.reference.delete();
+        }
+
+        // Delete the conversation document
+        await doc.reference.delete();
+      }
+    } catch (e) {
+      debugPrint("Delete user data error in FirestoreServices: $e");
+      throw e;
+    }
+  }
 }
