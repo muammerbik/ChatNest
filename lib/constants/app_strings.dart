@@ -100,6 +100,10 @@ const recommendText = "Recommend to Friend";
 const signOut = "Sign Out";
 const deleteUser = "Delete user";
 const deleteUserTextTitle = "Hesabınızı silmek istediğinize emin misisniz?";
+const emptyPageText = 'Bu sayfada henüz bir veri\nyok gibi gözüküyor.';
+const signInSnackBarText1 = "Şifre ve e mail alanları boş olamaz!";
+const signInErrorSnackBarText =
+    "Giriş Başarısız! Lütfen bilgilerinizi kontrol edin.";
 
 //IMAGE
 const appIcon = "assets/icons/chat.png";
@@ -116,3 +120,7 @@ const contactUsIcon = "assets/icons/contact.png";
 const recommendIcon = "assets/icons/share.png";
 const signOutIcon = "assets/icons/exit.png";
 const deleteUserIcon = "assets/icons/delete.png";
+
+//JSON
+const emptyJson = 'assets/jsonfiles/empty.json';
+const loadingJson = 'assets/jsonfiles/loading.json';

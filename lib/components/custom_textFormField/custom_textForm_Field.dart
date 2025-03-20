@@ -1,5 +1,6 @@
 import 'package:chat_menager/constants/app_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextFormField extends StatefulWidget {
   final String? labelText;
@@ -48,7 +49,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 56,
+      height: 56.h,
       child: TextFormField(
         readOnly: widget.readOnly ?? false,
         initialValue: widget.initialValue,
@@ -58,35 +59,36 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         maxLength: widget.maxLength,
         textInputAction: TextInputAction.done,
         textCapitalization:
-            widget.textCapitalization ?? TextCapitalization.words,
+            widget.textCapitalization ?? TextCapitalization.sentences,
         keyboardType: widget.keyboardType,
         controller: widget.controller,
         onTap: widget.onTap,
         maxLines: widget.maxLines ?? 1,
         decoration: InputDecoration(
             filled: true,
-            fillColor: Colors.grey.shade100,
+            fillColor: grey100,
             labelText: widget.labelText,
             hintText: widget.hintText,
-            contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+            contentPadding:
+                EdgeInsets.symmetric(vertical: 16.w, horizontal: 12.h),
             border: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 1),
+              borderSide: BorderSide(color: black, width: 1),
               borderRadius: BorderRadius.circular(24),
             ),
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 1),
+              borderSide: BorderSide(color: black, width: 1),
               borderRadius: BorderRadius.circular(24),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 1),
+              borderSide: BorderSide(color: black, width: 1),
               borderRadius: BorderRadius.circular(24),
             ),
             errorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 1),
+              borderSide: BorderSide(color: black, width: 1),
               borderRadius: BorderRadius.circular(24),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black, width: 1),
+              borderSide: BorderSide(color: black, width: 1),
               borderRadius: BorderRadius.circular(24),
             ),
             suffixIcon: widget.isPasswordField

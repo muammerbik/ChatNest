@@ -29,10 +29,12 @@ class _HomePageViewState extends State<HomePageView> {
     super.initState();
     _scrollController.addListener(_onScroll);
     final currentUser = context.read<SignUpBloc>().state.userModel;
-    context.read<HomeBloc>().add(GetAllUserListWithPaginationEvent(
-        latestFetchedUser: null,
-        bringNewUser: false,
-        currentUserId: currentUser.userId));
+    context.read<HomeBloc>().add(
+          GetAllUserListWithPaginationEvent(
+              latestFetchedUser: null,
+              bringNewUser: false,
+              currentUserId: currentUser.userId),
+        );
   }
 
   @override
@@ -107,16 +109,12 @@ class _HomePageViewState extends State<HomePageView> {
                                   debugPrint(
                                       "Selected user: ${user.toString()}");
 
-                                  /*  Navigation.push(
-                                    page: MessagePage(
-                                        currentUser: currentUser,
-                                        sohbetEdilenUser: user),
-                                  ); */
                                   Navigation.push(
-                                      page: MessagePageView(
-                                    currentUser: currentUser,
-                                    sohbetEdilenUser: user,
-                                  ));
+                                    page: MessagePageView(
+                                      currentUser: currentUser,
+                                      chattedUser: user,
+                                    ),
+                                  );
                                 } else {
                                   debugPrint(
                                       "Warning: currentUser.userId is empty!");

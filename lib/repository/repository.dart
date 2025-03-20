@@ -14,7 +14,7 @@ class Repository implements AuthBase {
   FirebaseAuthService firebaseAuthService = locator<FirebaseAuthService>();
   FirestoreServices fireStoreService = locator<FirestoreServices>();
   FirebaseStorageService firebaseStorage = locator<FirebaseStorageService>();
-  List<UserModel> tumKullanicilarListesi = [];
+  List<UserModel> allPersonList = [];
 
   @override
   Future<UserModel?> currentUser() async {
@@ -38,24 +38,23 @@ class Repository implements AuthBase {
 
   @override
   Future<UserModel?> googleWithSingIn() async {
-    UserModel? usermodel = await firebaseAuthService.googleWithSingIn();
-    if (usermodel != null) {
-      bool result = await fireStoreService.saveUser(usermodel);
+    UserModel? userModel = await firebaseAuthService.googleWithSingIn();
+    if (userModel != null) {
+      bool result = await fireStoreService.saveUser(userModel);
       if (result) {
-        return await fireStoreService.readUser(usermodel.userId);
+        return await fireStoreService.readUser(userModel.userId);
       }
     }
     return null;
   }
 
-// oluşturulan kullanıcının id değerini firestora kaydetmek istiyorum. bu nedenle bu işlemi repoda gerçekleştirdim.
   @override
   Future<UserModel?> createUserWithSingIn(String email, String password) async {
-    UserModel? usermodel =
+    UserModel? userModel =
         await firebaseAuthService.createUserWithSingIn(email, password);
-    bool result = await fireStoreService.saveUser(usermodel!);
+    bool result = await fireStoreService.saveUser(userModel!);
     if (result) {
-      return await fireStoreService.readUser(usermodel.userId);
+      return await fireStoreService.readUser(userModel.userId);
     } else {
       return null;
     }
@@ -63,9 +62,9 @@ class Repository implements AuthBase {
 
   @override
   Future<UserModel?> emailAndPasswordWithSingIn(String email, String password) async {
-    UserModel? usermodel =
+    UserModel? userModel =
         await firebaseAuthService.emailAndPasswordWithSingIn(email, password);
-    return await fireStoreService.readUser(usermodel!.userId);
+    return await fireStoreService.readUser(userModel!.userId);
   }
 
   Future<bool> updateUserName(String userId, String newUserName) async {
@@ -74,64 +73,64 @@ class Repository implements AuthBase {
 
   Future<String> uploadFile(
       String userId, String fileType, File? profilePhoto) async {
-    var profilPhotoUrl =
+    var profilePhotoUrl =
         await firebaseStorage.uploadFile(userId, fileType, profilePhoto!);
-    await fireStoreService.updateProfilePhoto(userId, profilPhotoUrl);
-    return profilPhotoUrl;
+    await fireStoreService.updateProfilePhoto(userId, profilePhotoUrl);
+    return profilePhotoUrl;
   }
 
 
   Future<List<UserModel>> getUserWithPagination(
-      UserModel? ensonGetirilenUser, int getirilecekElemanSayisi) async {
+      UserModel? lastFetchedUser, int numberOfElementsToFetch) async {
     List<UserModel> userList = await fireStoreService.getUserWithPagination(
-        ensonGetirilenUser, getirilecekElemanSayisi);
-    tumKullanicilarListesi.addAll(userList);
+        lastFetchedUser, numberOfElementsToFetch);
+    allPersonList.addAll(userList);
     return userList;
   }
 
 
 
-  Stream<List<MesajModel>> getMessagers(
-      String currentUserId, String sohbetEdilenUserId) {
-    return fireStoreService.getMessages(currentUserId, sohbetEdilenUserId);
+  Stream<List<MessageModel>> getMessages(
+      String currentUserId, String chattedUserId) {
+    return fireStoreService.getMessages(currentUserId, chattedUserId);
   }
 
-  Future<bool> saveMessages(MesajModel kaydedilecekMesaj) async {
-    return await fireStoreService.saveMessages(kaydedilecekMesaj);
+  Future<bool> saveMessages(MessageModel savedMessage) async {
+    return await fireStoreService.saveMessages(savedMessage);
   }
 
 
   
 
-  Future<List<KonusmaModel>> getAllConversations(String userId) async {
-    DateTime zaman = await fireStoreService.showTime(userId);
-    var konusmaListesi = await fireStoreService.getAllConversations(userId);
+  Future<List<ConversationModel>> getAllConversations(String userId) async {
+    DateTime currentTime = await fireStoreService.showTime(userId);
+    var conversationList = await fireStoreService.getAllConversations(userId);
     //konusmaModel sınıfımda kullanıcının username ve profilUrl değerini tutmadığım için, bu değerleri userModel sınıfından alıp kullanmaya çalışaçağım.bu nedenle yukarıda her yerden erişebileceğim tumKullanicilarListesi  listesini olusturdum.daha sonra userModeldeki bu verileri konusmaModele atayarak verileri istediğim verilere erişim sağladım.aşagıda  intarnete çıkmadan ve çıkarak ortamın durumuna göre verilere erişim sağlanıyor.//
-    for (var oankiKonusma in konusmaListesi) {
-      var userListesindekiKullanici =
-          listedeUserBul(oankiKonusma.kimle_konusuyor);
+    for (var currentConversation in conversationList) {
+      var userInList =
+          findUserInList(currentConversation.talkingTo);
 
       debugPrint("VERİLER VERİTABANINDAN  OKUNDU");
-      var veritabanindanOkunanUser =
-          await fireStoreService.readUser(oankiKonusma.kimle_konusuyor);
-      oankiKonusma.konusulanUserName = veritabanindanOkunanUser.userName;
-      oankiKonusma.konusulanUserProfilUrl = veritabanindanOkunanUser.profileUrl;
-      timeAgoHesapla(oankiKonusma, zaman);
+      var userFetchedFromDatabase =
+          await fireStoreService.readUser(currentConversation.talkingTo);
+      currentConversation.talkingToUserName = userFetchedFromDatabase.userName;
+      currentConversation.talkingToUserProfileUrl = userFetchedFromDatabase.profileUrl;
+      calculateTimeAgo(currentConversation, currentTime);
     }
-    return konusmaListesi;
+    return conversationList;
   }
 
-  void timeAgoHesapla(KonusmaModel oankiKonusma, DateTime zaman) {
-    oankiKonusma.son_okuma_zamani = zaman;
-    var duration = zaman.difference(oankiKonusma.olusturulma_tarihi.toDate());
-    oankiKonusma.saat_farki = timeago.format(zaman.subtract(duration));
+  void calculateTimeAgo(ConversationModel currentConversation, DateTime time) {
+    currentConversation.lastReadTime = time;
+    var duration = time.difference(currentConversation.createdAt.toDate());
+    currentConversation.timeDifference = timeago.format(time.subtract(duration));
   }
 
-  UserModel? listedeUserBul(String userId) {
+  UserModel? findUserInList(String userId) {
     // tüm elemanları gezerken ki userId ile kullanıcının userIdsi eşitse  bilgilerini getir.
-    for (int i = 0; i < tumKullanicilarListesi.length; i++) {
-      if (tumKullanicilarListesi[i].userId == userId) {
-        return tumKullanicilarListesi[i];
+    for (int i = 0; i < allPersonList.length; i++) {
+      if (allPersonList[i].userId == userId) {
+        return allPersonList[i];
       }
     }
     return null;
@@ -139,8 +138,8 @@ class Repository implements AuthBase {
 
 
   Future<bool> chatDelete(
-      String currentUserId, String sohbetEdilenUserId) async {
-    return await fireStoreService.chatDelete(currentUserId, sohbetEdilenUserId);
+      String currentUserId, String chattedUserId) async {
+    return await fireStoreService.chatDelete(currentUserId, chattedUserId);
   }
 
   @override

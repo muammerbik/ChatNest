@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:chat_menager/constants/app_strings.dart';
-import 'package:chat_menager/views/loading_page_view/loading_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,15 +14,13 @@ import 'package:chat_menager/core/model/user_model.dart';
 
 class MessagePageView extends StatefulWidget {
   final UserModel currentUser;
-  final UserModel sohbetEdilenUser;
-
+  final UserModel chattedUser;
 
   const MessagePageView({
-    Key? key,
+    super.key,
     required this.currentUser,
-    required this.sohbetEdilenUser,
-    
-  }) : super(key: key);
+    required this.chattedUser,
+  });
 
   @override
   State<MessagePageView> createState() => _MessagePageViewState();
@@ -37,7 +34,7 @@ class _MessagePageViewState extends State<MessagePageView> {
     context.read<MessageBloc>().add(
           GetMessageEvent(
               currentUserId: widget.currentUser.userId,
-              sohbetEdilenUserId: widget.sohbetEdilenUser.userId),
+              chattedUserId: widget.chattedUser.userId),
         );
     super.initState();
   }
@@ -64,7 +61,7 @@ class _MessagePageViewState extends State<MessagePageView> {
               padding: const EdgeInsets.only(left: 8),
               child: IconButton(
                 onPressed: () => Navigation.ofPop(),
-                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                icon: const Icon(Icons.arrow_back, color: black),
               ),
             ),
             title: Row(
@@ -73,13 +70,13 @@ class _MessagePageViewState extends State<MessagePageView> {
                   radius: 20.h,
                   backgroundColor: white,
                   backgroundImage:
-                      widget.sohbetEdilenUser.profileUrl?.isNotEmpty ?? false
-                          ? NetworkImage(widget.sohbetEdilenUser.profileUrl!)
+                      widget.chattedUser.profileUrl?.isNotEmpty ?? false
+                          ? NetworkImage(widget.chattedUser.profileUrl!)
                           : const AssetImage(userImage) as ImageProvider,
                 ),
                 SizedBox(width: 12.w),
                 TextWidgets(
-                  text: widget.sohbetEdilenUser.userName ?? '',
+                  text: widget.chattedUser.userName ?? '',
                   size: 18.sp,
                   fontWeight: FontWeight.w500,
                 ),
@@ -105,9 +102,13 @@ class _MessagePageViewState extends State<MessagePageView> {
                         EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
                     itemCount: state.messageList.length,
                     itemBuilder: (context, index) {
-                      final mesaj = state
+                      debugPrint(
+                          "Message list length: ${state.messageList.length}");
+                      final message = state
                           .messageList[state.messageList.length - 1 - index];
-                      return konusmaBalonlari(mesaj);
+                      debugPrint(
+                          "Building message at index $index: ${message.content}");
+                      return conversationBubbles(message);
                     },
                   ),
                 ),
@@ -150,22 +151,22 @@ class _MessagePageViewState extends State<MessagePageView> {
                               debugPrint(
                                   "Current User ID: ${widget.currentUser.userId}");
                               debugPrint(
-                                  "Sohbet Edilen User ID: ${widget.sohbetEdilenUser.userId}");
+                                  "Sohbet Edilen User ID: ${widget.chattedUser.userId}");
 
-                              final kaydedilecekMesaj = MesajModel(
-                                kimden: widget.currentUser.userId,
-                                kime: widget.sohbetEdilenUser.userId,
-                                bendenMi: true,
-                                mesaj: messageController.text.trim(),
-                                date: Timestamp.now(),
+                              final messageToSave = MessageModel(
+                                sender: widget.currentUser.userId,
+                                receiver: widget.chattedUser.userId,
+                                isSentByMe: true,
+                                content: messageController.text.trim(),
+                                timestamp: Timestamp.now(),
                               );
 
                               debugPrint(
-                                  "Kaydedilecek Mesaj: ${kaydedilecekMesaj.toString()}");
+                                  "Kaydedilecek Mesaj: ${messageToSave.toString()}");
 
                               context.read<MessageBloc>().add(
                                     SaveMessageEvent(
-                                        kaydedilecekMesaj: kaydedilecekMesaj),
+                                        savedMessage: messageToSave),
                                   );
 
                               messageController.clear();
@@ -189,15 +190,15 @@ class _MessagePageViewState extends State<MessagePageView> {
     );
   }
 
-  Widget konusmaBalonlari(MesajModel oankiMesaj) {
+  Widget conversationBubbles(MessageModel currentMessage) {
     Color messageSender = white;
     Color messageField = green.shade600;
-    var fromMe = oankiMesaj.kimden == widget.currentUser.userId;
+    var fromMe = currentMessage.sender == widget.currentUser.userId;
 
     var timeAndMinuteValue = "";
     try {
       timeAndMinuteValue =
-          showTimeAndMinute(oankiMesaj.date ?? Timestamp(1, 1));
+          showTimeAndMinute(currentMessage.timestamp ?? Timestamp(1, 1));
     } catch (e) {
       debugPrint("mesaj gönderimde zaman hatası var $e");
     }
@@ -236,7 +237,7 @@ class _MessagePageViewState extends State<MessagePageView> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      oankiMesaj.mesaj,
+                      currentMessage.content,
                       style: TextStyle(fontSize: 16.sp, color: black87),
                     ),
                     SizedBox(height: 4.h),
@@ -267,12 +268,12 @@ class _MessagePageViewState extends State<MessagePageView> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                widget.sohbetEdilenUser.profileUrl?.isNotEmpty ?? false
+                widget.chattedUser.profileUrl?.isNotEmpty ?? false
                     ? CircleAvatar(
                         radius: 16.r,
                         backgroundColor: grey50,
                         backgroundImage:
-                            NetworkImage(widget.sohbetEdilenUser.profileUrl!),
+                            NetworkImage(widget.chattedUser.profileUrl!),
                       )
                     : CircleAvatar(
                         radius: 16.r,
@@ -309,7 +310,7 @@ class _MessagePageViewState extends State<MessagePageView> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            oankiMesaj.mesaj,
+                            currentMessage.content,
                             style:
                                 TextStyle(fontSize: 16.sp, color: Colors.white),
                           ),

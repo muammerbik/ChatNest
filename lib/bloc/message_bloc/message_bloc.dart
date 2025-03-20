@@ -26,9 +26,9 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     emit(state.copyWith(status: MessageStatus.loading));
 
     try {
-      final messagesStream = repository.getMessagers(
+      final messagesStream = repository.getMessages(
         event.currentUserId,
-        event.sohbetEdilenUserId,
+        event.chattedUserId,
       );
 
       // Stream'den gelen mesajları dinle ve state'i güncelle
@@ -50,7 +50,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     // emit(state.copyWith(status: MessageStatus.loading));
 
     try {
-      final isSaved = await repository.saveMessages(event.kaydedilecekMesaj);
+      final isSaved = await repository.saveMessages(event.savedMessage);
 
       if (isSaved) {
         // Keep the current state, don't change to success as it will be updated by the stream

@@ -1,4 +1,6 @@
+import 'package:chat_menager/constants/app_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomElevatedButtonView extends StatelessWidget {
   final String text;
@@ -20,14 +22,14 @@ class CustomElevatedButtonView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
-      height: 56,
+      height: 64.h,
       child: ElevatedButton(
         onPressed: onTop,
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           foregroundColor: textColor,
           elevation: borderColor != null ? 0 : 4,
-          shadowColor: Colors.red.withOpacity(0.3),
+          shadowColor: customRed.withOpacity(0.3),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
             side: borderColor != null
@@ -38,7 +40,7 @@ class CustomElevatedButtonView extends StatelessWidget {
         child: Text(
           text,
           style: TextStyle(
-            fontSize: 18,
+            fontSize: 18.sp,
             fontWeight: FontWeight.w600,
           ),
         ),

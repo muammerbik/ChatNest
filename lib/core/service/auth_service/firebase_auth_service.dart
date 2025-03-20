@@ -58,23 +58,19 @@ class FirebaseAuthService implements AuthBase {
   @override
   Future<UserModel?> googleWithSingIn() async {
     try {
-      // Google ile giriş yap
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser != null) {
         final GoogleSignInAuthentication googleAuth =
             await googleUser.authentication;
 
-        // Google kimlik doğrulama bilgilerini al
         final credential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
 
-        // Firebase Authentication'a giriş yap
         final UserCredential userCredential =
             await firebaseAuth.signInWithCredential(credential);
 
-        // Oluşturulan kullanıcıyı döndür
         final User? user = userCredential.user;
         if (user != null) {
           return _userFromFirebase(user);
@@ -90,12 +86,14 @@ class FirebaseAuthService implements AuthBase {
     }
   }
 
+
   @override
   Future<UserModel?> createUserWithSingIn(String email, String password) async {
     var userCredential = await firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
     return _userFromFirebase(userCredential.user!);
   }
+
 
   @override
   Future<UserModel?> emailAndPasswordWithSingIn(
@@ -104,6 +102,7 @@ class FirebaseAuthService implements AuthBase {
         email: email, password: password);
     return _userFromFirebase(userCredential.user!);
   }
+
 
   @override
   Future<bool> deleteUser() async {

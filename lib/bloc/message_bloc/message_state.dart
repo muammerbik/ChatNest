@@ -4,7 +4,7 @@ enum MessageStatus { init, loading, success, error }
 
 class MessageState extends Equatable {
   final MessageStatus status;
-  final List<MesajModel> messageList;
+  final List<MessageModel> messageList;
 
   const MessageState({
     required this.status,
@@ -13,7 +13,7 @@ class MessageState extends Equatable {
 
   MessageState copyWith({
     MessageStatus? status,
-    List<MesajModel>? messageList,
+    List<MessageModel>? messageList,
   }) {
     return MessageState(
       status: status ?? this.status,

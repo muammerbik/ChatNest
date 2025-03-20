@@ -27,6 +27,7 @@ class _ChatPageViewState extends State<ChatPageView> {
   @override
   void initState() {
     final currentUserId = context.read<SignUpBloc>().state.userModel.userId;
+    debugPrint("ChatPageView - Current User ID: $currentUserId");
     context.read<ChatBloc>().add(
           GetAllConversationsEvent(userId: currentUserId),
         );
@@ -36,7 +37,10 @@ class _ChatPageViewState extends State<ChatPageView> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<ChatBloc, ChatState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        debugPrint("ChatPageView - State Status: ${state.status}");
+        debugPrint("ChatPageView - Chat List Length: ${state.chatList.length}");
+      },
       builder: (context, state) {
         if (state.status == ChatStatus.loading) {
           return LoadingPageView();
@@ -47,7 +51,9 @@ class _ChatPageViewState extends State<ChatPageView> {
               appBarTitle: chats,
               actionIcons: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    //Arama özelliği eklenecek!
+                  },
                   icon: Icon(
                     Icons.search,
                     color: black,
@@ -61,12 +67,12 @@ class _ChatPageViewState extends State<ChatPageView> {
                     itemBuilder: (context, index) {
                       final chat = state.chatList[index];
                       return ListTile(
-                        leading: chat.konusulanUserProfilUrl!.isNotEmpty
+                        leading: chat.talkingToUserProfileUrl!.isNotEmpty
                             ? CircleAvatar(
                                 radius: 24.r,
                                 backgroundColor: grey.withAlpha(30),
                                 backgroundImage:
-                                    NetworkImage(chat.konusulanUserProfilUrl!),
+                                    NetworkImage(chat.talkingToUserProfileUrl!),
                               )
                             : CircleAvatar(
                                 radius: 24.r,
@@ -78,7 +84,7 @@ class _ChatPageViewState extends State<ChatPageView> {
                           children: [
                             TextWidgets(
                               text: _getShortenedText(
-                                  chat.konusulanUserName!, 28),
+                                  chat.talkingToUserName!, 28),
                               size: 16.sp,
                               textAlign: TextAlign.start,
                               fontWeight: FontWeight.w500,
@@ -92,7 +98,7 @@ class _ChatPageViewState extends State<ChatPageView> {
                           ],
                         ),
                         subtitle: TextWidgets(
-                          text: _getShortenedText(chat.son_yollanan_mesaj, 36),
+                          text: _getShortenedText(chat.lastSentMessage, 36),
                           size: 14.sp,
                           textAlign: TextAlign.start,
                           fontWeight: FontWeight.normal,
@@ -102,28 +108,19 @@ class _ChatPageViewState extends State<ChatPageView> {
                               context.read<SignUpBloc>().state.userModel;
                           final messageBloc = context.read<MessageBloc>();
 
-                          /*  Navigation.push(
-                              page: MessagePage(
-                                  currentUser: currentUser,
-                                  sohbetEdilenUser:
-                                      UserModel.withIdAndProfileUrl(
-                                          userId: chat.kimle_konusuyor,
-                                          userName: chat.konusulanUserName,
-                                          profileUrl:
-                                              chat.konusulanUserProfilUrl))); */
                           Navigation.push(
-                              page: MessagePageView(
-                                  currentUser: currentUser,
-                                  sohbetEdilenUser:
-                                      UserModel.withIdAndProfileUrl(
-                                          userId: chat.kimle_konusuyor,
-                                          profileUrl:
-                                              chat.konusulanUserProfilUrl,
-                                          userName: chat.konusulanUserName)));
+                            page: MessagePageView(
+                              currentUser: currentUser,
+                              chattedUser: UserModel.withIdAndProfileUrl(
+                                  userId: chat.talkingTo,
+                                  profileUrl: chat.talkingToUserProfileUrl,
+                                  userName: chat.talkingToUserName),
+                            ),
+                          );
                           messageBloc.add(
                             GetMessageEvent(
                               currentUserId: currentUser.userId,
-                              sohbetEdilenUserId: chat.kimle_konusuyor,
+                              chattedUserId: chat.talkingTo,
                             ),
                           );
                         },

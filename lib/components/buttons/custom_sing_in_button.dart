@@ -1,4 +1,6 @@
+import 'package:chat_menager/constants/app_strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 
 class CustomSingInButton extends StatefulWidget {
@@ -27,14 +29,14 @@ class _CustomSingInButtonState extends State<CustomSingInButton> {
     return GestureDetector(
       onTap: widget.onTop,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12),
+        padding: EdgeInsets.symmetric(horizontal: 12.w),
         width: double.infinity,
-        height: 56,
+        height: 64.h,
         decoration: ShapeDecoration(
           color: widget.color,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-            side: BorderSide(color: Colors.grey, width: 1),
+            borderRadius: BorderRadius.circular(16.r),
+            side: BorderSide(color: grey, width: 1),
           ),
         ),
         child: Row(
@@ -50,7 +52,7 @@ class _CustomSingInButtonState extends State<CustomSingInButton> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: widget.textColor,
-                  fontSize: 18,
+                  fontSize: 18.sp,
                 ),
               ),
             ),

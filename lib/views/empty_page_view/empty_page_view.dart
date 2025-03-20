@@ -9,9 +9,9 @@ import 'package:chat_menager/constants/app_strings.dart';
 class EmptyPageView extends StatelessWidget {
   final String? message;
   const EmptyPageView({
-    Key? key,
+    super.key,
     this.message,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,15 +26,15 @@ class EmptyPageView extends StatelessWidget {
             SizedBox(
               width: 250.w,
               child: Lottie.asset(
-                'assets/jsonfiles/empty.json',
+                emptyJson,
                 fit: BoxFit.contain,
               ),
             ),
             Text(
-              message ?? 'Bu sayfada henüz bir veri\nyok gibi gözüküyor.',
+              message ?? emptyPageText,
               textAlign: TextAlign.center,
               style: GoogleFonts.ubuntu(
-                color: Colors.grey,
+                color: grey,
                 fontSize: 16.sp,
                 textStyle: const TextStyle(fontWeight: FontWeight.normal),
               ),

@@ -41,7 +41,7 @@ class _SignUpPageViewState extends State<SignUpPageView> {
           CustomSnackBar.show(
             context: context,
             message: signUpSnackBar,
-            containerColor: customRed,
+            containerColor: red,
             textColor: white,
           );
         }
@@ -131,7 +131,7 @@ class _SignUpPageViewState extends State<SignUpPageView> {
                               CustomSnackBar.show(
                                 context: context,
                                 message: signUpSnackBar,
-                                containerColor: customRed,
+                                containerColor: red,
                                 textColor: white,
                               );
                             }

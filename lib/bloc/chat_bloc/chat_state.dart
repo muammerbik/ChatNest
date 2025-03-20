@@ -5,7 +5,7 @@ enum ChatStatus { init, loading, success, error }
 
 class ChatState extends Equatable {
   final ChatStatus status;
-  final List<KonusmaModel> chatList;
+  final List<ConversationModel> chatList;
 
   const ChatState({
     required this.status,
@@ -14,7 +14,7 @@ class ChatState extends Equatable {
 
   ChatState copyWith({
     ChatStatus? status,
-    List<KonusmaModel>? chatList,
+    List<ConversationModel>? chatList,
   }) {
     return ChatState(
       status: status ?? this.status,

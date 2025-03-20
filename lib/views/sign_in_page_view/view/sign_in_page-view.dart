@@ -1,9 +1,11 @@
 import 'package:chat_menager/bloc/sign_in_bloc/sign_in_bloc.dart';
+import 'package:chat_menager/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:chat_menager/components/buttons/custom_bottom_bar.dart';
 import 'package:chat_menager/components/buttons/custom_elevated_button.dart';
 import 'package:chat_menager/components/buttons/custom_sing_in_button.dart';
 import 'package:chat_menager/components/custom_text/custom_text.dart';
 import 'package:chat_menager/components/custom_textFormField/custom_textForm_Field.dart';
+import 'package:chat_menager/components/dialog/custom_snackBar.dart';
 import 'package:chat_menager/constants/app_strings.dart';
 import 'package:chat_menager/views/loading_page_view/loading_page.dart';
 import 'package:chat_menager/views/sign_up_page_view/view/sign_up_page_view.dart';
@@ -27,18 +29,19 @@ class _SignInPageViewState extends State<SignInPageView> {
     return BlocConsumer<SignInBloc, SignInState>(
       listener: (context, state) {
         if (state.status == SignInStatus.success) {
+          context.read<SignUpBloc>().add(CurrentUserStartEvent());
+
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => BottomBar()),
             (route) => false,
           );
         } else if (state.status == SignInStatus.error) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content:
-                  Text("Giriş Başarısız! Lütfen bilgilerinizi kontrol edin."),
-              backgroundColor: Colors.red,
-            ),
+          CustomSnackBar.show(
+            context: context,
+            message: signInErrorSnackBarText,
+            containerColor: red,
+            textColor: white,
           );
         }
       },
@@ -68,7 +71,7 @@ class _SignInPageViewState extends State<SignInPageView> {
                       child: TextWidgets(
                         text: signInSubTitle,
                         size: 16.sp,
-                        color: Colors.black54,
+                        color: black54,
                         fontWeight: FontWeight.normal,
                       ),
                     ),
@@ -95,7 +98,7 @@ class _SignInPageViewState extends State<SignInPageView> {
                           child: TextWidgets(
                             text: "Şifremi Unuttum",
                             size: 14.sp,
-                            color: Colors.grey,
+                            color: grey,
                             fontWeight: FontWeight.normal,
                           ),
                         ),
@@ -105,7 +108,7 @@ class _SignInPageViewState extends State<SignInPageView> {
                       padding: EdgeInsets.symmetric(vertical: 16.h),
                       child: CustomElevatedButtonView(
                         text: signIn,
-                        color: Colors.red,
+                        color: red,
                         textColor: Colors.white,
                         onTop: () {
                           if (emailController.text.isNotEmpty &&
@@ -117,11 +120,11 @@ class _SignInPageViewState extends State<SignInPageView> {
                                   ),
                                 );
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text("Lütfen tüm alanları doldurun."),
-                                backgroundColor: Colors.red,
-                              ),
+                            CustomSnackBar.show(
+                              context: context,
+                              message: signInSnackBarText1,
+                              containerColor: red,
+                              textColor: white,
                             );
                           }
                         },
@@ -135,9 +138,11 @@ class _SignInPageViewState extends State<SignInPageView> {
                       ),
                       text: googleWithSignIn,
                       onTop: () {
-                        context.read<SignInBloc>().add(GoogleSignInEvent());
+                        context.read<SignInBloc>().add(
+                              GoogleSignInEvent(),
+                            );
                       },
-                      color: Colors.white,
+                      color: white,
                     ),
                     const Spacer(),
                     Padding(
@@ -148,7 +153,7 @@ class _SignInPageViewState extends State<SignInPageView> {
                           TextWidgets(
                             text: signInSubTitle2,
                             size: 14.sp,
-                            color: Colors.grey,
+                            color: grey,
                             fontWeight: FontWeight.normal,
                           ),
                           TextButton(
@@ -156,13 +161,14 @@ class _SignInPageViewState extends State<SignInPageView> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SignUpPageView()),
+                                  builder: (context) => SignUpPageView(),
+                                ),
                               );
                             },
                             child: TextWidgets(
                               text: signUp,
                               size: 14.sp,
-                              color: Colors.red,
+                              color: red,
                             ),
                           ),
                         ],

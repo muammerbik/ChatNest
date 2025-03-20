@@ -19,8 +19,8 @@ class _BottomBarState extends State<BottomBar> {
   bool sendStory = false;
 
   final List<Widget> _widgetOptions = <Widget>[
-   HomePageView(),
-   ChatPageView(),
+    HomePageView(),
+    ChatPageView(),
     const ProfilePageView(),
   ];
 
@@ -37,7 +37,7 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: white,
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
@@ -76,12 +76,11 @@ class _BottomBarState extends State<BottomBar> {
                   )
                 : Icon(
                     Icons.group,
-                    color: Colors.black,
+                    color: black,
                     size: 22,
                   ),
-            label: "Kullanıcılar",
+            label: "Users",
           ),
-
           BottomNavigationBarItem(
             icon: _selectedIndex == 1
                 ? Icon(
@@ -91,10 +90,10 @@ class _BottomBarState extends State<BottomBar> {
                   )
                 : Icon(
                     Icons.chat,
-                    color: Colors.black,
+                    color: black,
                     size: 22,
                   ),
-            label: "Sohbetler",
+            label: "Chats",
           ),
           BottomNavigationBarItem(
             icon: _selectedIndex == 2
@@ -105,10 +104,10 @@ class _BottomBarState extends State<BottomBar> {
                   )
                 : Icon(
                     Icons.manage_accounts,
-                    color: Colors.black,
+                    color: black,
                     size: 22,
                   ),
-            label: "Profil",
+            label: "Profile",
           ),
         ],
       ),

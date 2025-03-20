@@ -9,22 +9,22 @@ class MessageEvent extends Equatable {
 
 class GetMessageEvent extends MessageEvent {
   final String currentUserId;
-  final String sohbetEdilenUserId;
+  final String chattedUserId;
 
   const GetMessageEvent({
     required this.currentUserId,
-    required this.sohbetEdilenUserId,
+    required this.chattedUserId,
   });
 
   @override
-  List<Object> get props => [currentUserId, sohbetEdilenUserId];
+  List<Object> get props => [currentUserId, chattedUserId];
 }
 
 class SaveMessageEvent extends MessageEvent {
-  final MesajModel kaydedilecekMesaj;
+  final MessageModel savedMessage;
 
-  const SaveMessageEvent({required this.kaydedilecekMesaj});
+  const SaveMessageEvent({required this.savedMessage});
 
   @override
-  List<Object> get props => [kaydedilecekMesaj];
+  List<Object> get props => [savedMessage];
 }

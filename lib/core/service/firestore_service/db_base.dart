@@ -7,12 +7,11 @@ abstract class DbBase {
   Future<bool> saveUser(UserModel userModel);
   Future<UserModel> readUser(String userId);
   Future<bool> updateUserName(String userId, String newUserName);
-  Future<bool> updateProfilePhoto(String userId, String profilPhotoUrl);
-  Future<List<UserModel>> getUserWithPagination(UserModel ensonGetirilenUser, int getirilecekElemanSayisi);
-  
-  Stream<List<MesajModel>> getMessages(String currentUserId, String sohbetEdilenUserId);
-  Future<bool> saveMessages(MesajModel kaydedilecekMesaj);
-  Future<List<KonusmaModel>> getAllConversations(String userId);
+  Future<bool> updateProfilePhoto(String userId, String profilePhotoUrl);
+  Future<List<UserModel>> getUserWithPagination(UserModel lastFetchedUser, int numberOfElementsToFetch);
+  Stream<List<MessageModel>> getMessages(String currentUserId, String chattedUserId);
+  Future<bool> saveMessages(MessageModel savedMessage);
+  Future<List<ConversationModel>> getAllConversations(String userId);
   Future<DateTime> showTime(String userId);
-  Future<bool> chatDelete(String currentUserId, String sohbetEdilenUserId);
+  Future<bool> chatDelete(String currentUserId, String chattedUserId);
 }

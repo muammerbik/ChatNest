@@ -14,9 +14,7 @@ class LoadingPageView extends StatelessWidget {
         child: SizedBox(
           height: 250.h,
           width: 250.w,
-          child: Lottie.asset(
-            'assets/jsonfiles/loading.json',
-          ),
+          child: Lottie.asset(loadingJson),
         ),
       ),
     );

@@ -2,68 +2,72 @@
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class MesajModel {
-  final String kimden;
-  final String kime;
-  final Timestamp? date;
-  final bool bendenMi;
-  final String mesaj;
+class MessageModel {
+  final String sender; // Kimden (Gönderen kişi)
+  final String receiver; // Kime (Alıcı kişi)
+  final Timestamp? timestamp; // Tarih (Mesajın gönderilme zamanı)
+  final bool isSentByMe; // Benden Mi (Mesajın benden gelip gelmediğini belirten boolean)
+  final String content; // Mesaj içeriği
 
-  MesajModel({
-    required this.kimden,
-    required this.kime,
-    this.date,
-    required this.bendenMi,
-    required this.mesaj,
+  MessageModel({
+    required this.sender,
+    required this.receiver,
+    this.timestamp,
+    required this.isSentByMe,
+    required this.content,
   });
 
+  // Mesajı Map formatında döndürme
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'kimden': kimden,
-      'kime': kime,
-      'date': date ?? FieldValue.serverTimestamp(),
-      'bendenMi': bendenMi,
-      'mesaj': mesaj,
+      'sender': sender,
+      'receiver': receiver,
+      'timestamp': timestamp ?? FieldValue.serverTimestamp(),
+      'isSentByMe': isSentByMe,
+      'content': content,
     };
   }
 
-  factory MesajModel.fromMap(Map<String, dynamic> map) {
-    return MesajModel(
-      kimden: map['kimden'] as String,
-      kime: map['kime'] as String,
-      date: map['date'],
-      bendenMi: map['bendenMi'] as bool,
-      mesaj: map['mesaj'] as String,
+  // Map formatındaki veriden MessageModel nesnesi oluşturma
+  factory MessageModel.fromMap(Map<String, dynamic> map) {
+    return MessageModel(
+      sender: map['sender'] as String,
+      receiver: map['receiver'] as String,
+      timestamp: map['timestamp'],
+      isSentByMe: map['isSentByMe'] as bool,
+      content: map['content'] as String,
     );
   }
 
+  // JSON formatında bir string döndürme
   String toJson() => json.encode(toMap());
 
-  factory MesajModel.fromJson(String source) =>
-      MesajModel.fromMap(json.decode(source) as Map<String, dynamic>);
+  // JSON string'inden MessageModel nesnesi oluşturma
+  factory MessageModel.fromJson(String source) =>
+      MessageModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'MesajModel(kimden: $kimden, kime: $kime, date: $date, bendenMi: $bendenMi, mesaj: $mesaj)';
+    return 'MessageModel(sender: $sender, receiver: $receiver, timestamp: $timestamp, isSentByMe: $isSentByMe, content: $content)';
   }
 
   @override
-  bool operator ==(covariant MesajModel other) {
+  bool operator ==(covariant MessageModel other) {
     if (identical(this, other)) return true;
 
-    return other.kimden == kimden &&
-        other.kime == kime &&
-        other.date == date &&
-        other.bendenMi == bendenMi &&
-        other.mesaj == mesaj;
+    return other.sender == sender &&
+        other.receiver == receiver &&
+        other.timestamp == timestamp &&
+        other.isSentByMe == isSentByMe &&
+        other.content == content;
   }
 
   @override
   int get hashCode {
-    return kimden.hashCode ^
-        kime.hashCode ^
-        date.hashCode ^
-        bendenMi.hashCode ^
-        mesaj.hashCode;
+    return sender.hashCode ^
+        receiver.hashCode ^
+        timestamp.hashCode ^
+        isSentByMe.hashCode ^
+        content.hashCode;
   }
 }

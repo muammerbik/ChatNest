@@ -25,14 +25,15 @@ class FirestoreServices implements DbBase {
 
   @override
   Future<UserModel> readUser(String userId) async {
-    DocumentSnapshot okunanUser =
+    DocumentSnapshot readUsers =
         await firestore.collection("users").doc(userId).get();
-    Map<String, dynamic>? okunanUserBilgileriMap =
-        okunanUser.data() as Map<String, dynamic>?;
-    UserModel okunanUserNesnesi = UserModel.fromMap(okunanUserBilgileriMap!);
-    debugPrint("okunan user nesnesi$okunanUserNesnesi");
-    return okunanUserNesnesi;
+    Map<String, dynamic>? readUserInfoMap =
+        readUsers.data() as Map<String, dynamic>?;
+    UserModel readUserObject = UserModel.fromMap(readUserInfoMap!);
+    debugPrint("okunan user nesnesi$readUserObject");
+    return readUserObject;
   }
+
 
   @override
   Future<bool> updateUserName(String userId, String newUserName) async {
@@ -51,49 +52,61 @@ class FirestoreServices implements DbBase {
     }
   }
 
+
   @override
-  Future<bool> updateProfilePhoto(String userId, String profilPhotoUrl) async {
+  Future<bool> updateProfilePhoto(String userId, String profilePhotoUrl) async {
     await firestore
         .collection("users")
         .doc(userId)
-        .update({"profilUrl": profilPhotoUrl});
+        .update({"profileUrl": profilePhotoUrl});
     return true;
   }
 
+
   @override
-//sohbet ettiğim tüm kullanıcıları bir listeye aldım ve bu listeyi chatPage de göstereceğim.
-  Future<List<KonusmaModel>> getAllConversations(String userId) async {
+  Future<List<ConversationModel>> getAllConversations(String userId) async {
+    debugPrint("Fetching conversations for user: $userId");
+    
     QuerySnapshot querySnapshot = await firestore
-        .collection("konusanlar")
-        .where("konusma_sahibi", isEqualTo: userId)
-        .orderBy("olusturulma_tarihi", descending: true)
+        .collection("conversations")
+        .where("conversationOwner", isEqualTo: userId)
+        .orderBy("createdAt", descending: true)
         .get();
 
-    List<KonusmaModel> conversationsList = [];
+    debugPrint("Found ${querySnapshot.docs.length} conversations");
+
+    List<ConversationModel> conversationsList = [];
 
     for (DocumentSnapshot talkUser in querySnapshot.docs) {
       var data = talkUser.data();
+      debugPrint("Processing conversation data: $data");
       if (data is Map<String, dynamic>) {
-        KonusmaModel talkUser = KonusmaModel.fromMap(data);
-        conversationsList.add(talkUser);
+        try {
+          ConversationModel talkUser = ConversationModel.fromMap(data);
+          conversationsList.add(talkUser);
+          debugPrint("Successfully added conversation: ${talkUser.toString()}");
+        } catch (e) {
+          debugPrint("Error parsing conversation data: $e");
+        }
       }
     }
+    debugPrint("Returning ${conversationsList.length} conversations");
     return conversationsList;
   }
 
-  //Stream yapısı anlık olarak verileri dinlemek için kullanılır, İçerisinde mesajlar olan bir liste döndürdüm.Sohbetteki tüm mesajları almamı sağlayacak.
+
   @override
-  Stream<List<MesajModel>> getMessages(String currentUserId, String sohbetEdilenUserId) {
+  Stream<List<MessageModel>> getMessages(String currentUserId, String chattedUserId) {
     var snapshot = firestore
-        .collection("konusanlar")
-        .doc("$currentUserId--$sohbetEdilenUserId")
-        .collection("mesajlar")
-        .orderBy("date")
+        .collection("conversations")
+        .doc("$currentUserId--$chattedUserId")
+        .collection("messages")
+        .orderBy("timestamp")
         .snapshots();
     return snapshot.map(
       (snapshot) => snapshot.docs
           .map(
-            (event) => MesajModel.fromMap(
+            (event) => MessageModel.fromMap(
               event.data(),
             ),
           )
@@ -101,73 +114,70 @@ class FirestoreServices implements DbBase {
     );
   }
 
-  // Mesajlaşma iki kişi arsında olan birseydir.Mesaj gönderen ve mesaj alan kişiler vardır.ve ortada bir mesaj dökümanı olmalı.mesaj gönderen ve mesaj alan kişileri doc olarak iki kere karşılıklı kaydetmemiz gerek. Bunun sebebi kullanıcılardan biri mesajları sildiğinde silmeyen kişideki verilerin gidebileceğindendir
-  // mesajı db ye kaydederken iki farklı yere kaydedip, farklı idler vermem gerekiyor.
+
   @override
-  Future<bool> saveMessages(MesajModel kaydedilecekMesaj) async {
-    var mesajId = firestore.collection("konusanlar").doc().id;
-    //yazılan mesajı içinde barındıracak bir alt id olusturdum.
-    //mesajlaşma karşıklı olacağı için ,karşılıklı olarak yazılacak mesajları kaydettim.
-    var myDocumentId = "${kaydedilecekMesaj.kimden}--${kaydedilecekMesaj.kime}";
-    var receiverDocumentId ="${kaydedilecekMesaj.kime}--${kaydedilecekMesaj.kimden}";
-    var kaydedilecekIdninMapi = kaydedilecekMesaj.toMap();
+  Future<bool> saveMessages(MessageModel savedMessage) async {
+    var messageId = firestore.collection("conversations").doc().id;
+    var myDocumentId = "${savedMessage.sender}--${savedMessage.receiver}";
+    var receiverDocumentId = "${savedMessage.receiver}--${savedMessage.sender}";
+    var idMapToSave = savedMessage.toMap();
 
     await firestore
-        .collection("konusanlar")
+        .collection("conversations")
         .doc(myDocumentId)
-        .collection("mesajlar")
-        .doc(mesajId)
-        .set(kaydedilecekIdninMapi);
-     kaydedilecekIdninMapi.update("bendenMi", (value) => false);
+        .collection("messages")
+        .doc(messageId)
+        .set(idMapToSave);
+      
+    idMapToSave.update("isSentByMe", (value) => false);
 
     await firestore
-        .collection("konusanlar")
+        .collection("conversations")
         .doc(receiverDocumentId)
-        .collection("mesajlar")
-        .doc(mesajId)
-        .set(kaydedilecekIdninMapi);
-    /*
-      .Kullanıcılar sayfasında kayıtlı olan herkesi görüyorken, sohbet alanında sadece mesajlaştığım kullanıcıları görmek istiyorum.bu yüzden tüm kullanıcılar içinden konuştuklarımı filtrelemeye çalıştığımda firebase çok fazla okuma yapmış oluyor. Okumadan tasarruf edip sadece sohbet ettiğim kullanıcıları almak için konusanlar collectionundan oanki kullanıcı ve sohbet ettiği kişi için yeni bir döküman oluşturdum.Sohbet eden kullanıcıların ikisi de bu verilere sahip olsun diye hem oanki user hemde sohbet edilen için id kullanarak bu verileri kaydettim.
-       */
-    await firestore.collection("konusanlar").doc(myDocumentId).set({
-      "konusma_sahibi": kaydedilecekMesaj.kimden,
-      "kimle_konusuyor": kaydedilecekMesaj.kime,
-      "son_yollanan_mesaj": kaydedilecekMesaj.mesaj,
-      "konusma_görüldü": false,
-      "olusturulma_tarihi": FieldValue.serverTimestamp(),
+        .collection("messages")
+        .doc(messageId)
+        .set(idMapToSave);
+    
+    await firestore.collection("conversations").doc(myDocumentId).set({
+      "conversationOwner": savedMessage.sender,
+      "talkingTo": savedMessage.receiver,
+      "lastSentMessage": savedMessage.content,
+      "isRead": false,
+      "createdAt": FieldValue.serverTimestamp(),
+      
     });
 
-    await firestore.collection("konusanlar").doc(receiverDocumentId).set({
-      "konusma_sahibi": kaydedilecekMesaj.kime,
-      "kimle_konusuyor": kaydedilecekMesaj.kimden,
-      "son_yollanan_mesaj": kaydedilecekMesaj.mesaj,
-      "konusma_görüldü": false,
-      "olusturulma_tarihi": FieldValue.serverTimestamp(),
+    await firestore.collection("conversations").doc(receiverDocumentId).set({
+      "conversationOwner": savedMessage.receiver,
+      "talkingTo": savedMessage.sender,
+      "lastSentMessage": savedMessage.content,
+      "isRead": false,
+      "createdAt": FieldValue.serverTimestamp(),
+     
     });
 
     return true;
   }
 
+
   @override
-  Future<List<UserModel>> getUserWithPagination(UserModel? enSoongetirilenUser, int getirilecekElemanSayisi) async {
+  Future<List<UserModel>> getUserWithPagination(UserModel? lastFetchedUser, int numberOfElementsToFetch) async {
     QuerySnapshot querySnapshot;
     List<UserModel> allUserList = [];
-    if (enSoongetirilenUser == null) {
-      // ilk gelecek on eleman için
+    if (lastFetchedUser == null) {
       debugPrint("ilk defa kullanıcılar getirliliyor");
       querySnapshot = await FirebaseFirestore.instance
           .collection("users")
           .orderBy("userName")
-          .limit(getirilecekElemanSayisi)
+          .limit(numberOfElementsToFetch)
           .get();
     } else {
-      // ilk gelen 10 elemandan sonraki elemanlar için. enson gelen isimden sonra  yeni elemanlar gelecekk,
       debugPrint("Sonraki kullanıcılar getirliliyor");
       querySnapshot = await FirebaseFirestore.instance
           .collection("users")
           .orderBy("userName")
-          .startAfter([enSoongetirilenUser.userName])
-          .limit(getirilecekElemanSayisi)
+          .startAfter([lastFetchedUser.userName])
+          .limit(numberOfElementsToFetch)
           .get();
       await Future.delayed(
         const Duration(seconds: 1),
@@ -176,13 +186,14 @@ class FirestoreServices implements DbBase {
     for (DocumentSnapshot snap in querySnapshot.docs) {
       var data = snap.data();
       if (data is Map<String, dynamic>) {
-        UserModel tekUser = UserModel.fromMap(data);
-        allUserList.add(tekUser);
-        debugPrint("getirilien user name ${tekUser.userName!}");
+        UserModel singleUser = UserModel.fromMap(data);
+        allUserList.add(singleUser);
+        debugPrint("getirilien user name ${singleUser.userName!}");
       }
     }
     return allUserList;
   }
+
 
   @override
   Future<DateTime> showTime(String userId) async {
@@ -190,31 +201,32 @@ class FirestoreServices implements DbBase {
         .collection("server")
         .doc(userId)
         .set({"saat": FieldValue.serverTimestamp()});
-    var okunanMap = await firestore.collection("server").doc(userId).get();
-    Map<String, dynamic>? data = okunanMap.data();
+    var readToMap = await firestore.collection("server").doc(userId).get();
+    Map<String, dynamic>? data = readToMap.data();
     if (data != null) {
-      Timestamp okunanTarih = data["saat"];
-      return okunanTarih.toDate();
+      Timestamp readDate = data["saat"];
+      return readDate.toDate();
     } else {
       throw Exception("Data not found");
     }
   }
 
+
   @override
-  Future<bool> chatDelete(String currentUserId, String sohbetEdilenUserId) async {
-    String chatId = "$currentUserId--$sohbetEdilenUserId";
-    String reverseChatId = "$sohbetEdilenUserId--$currentUserId";
+  Future<bool> chatDelete(String currentUserId, String chattedUserId) async {
+    String chatId = "$currentUserId--$chattedUserId";
+    String reverseChatId = "$chattedUserId--$currentUserId";
 
     try {
       // Konuşmayı sil
-      await firestore.collection("konusanlar").doc(chatId).delete();
-      await firestore.collection("konusanlar").doc(reverseChatId).delete();
+      await firestore.collection("conversations").doc(chatId).delete();
+      await firestore.collection("conversations").doc(reverseChatId).delete();
 
       // Mesajları sil
       var messagesSnapshot = await firestore
-          .collection("konusanlar")
+          .collection("conversations")
           .doc(chatId)
-          .collection("mesajlar")
+          .collection("messages")
           .get();
       for (var doc in messagesSnapshot.docs) {
         await doc.reference.delete();
@@ -227,6 +239,7 @@ class FirestoreServices implements DbBase {
     }
   }
 
+
   Future<void> deleteUserData(String userId) async {
     try {
       // Delete user's profile data
@@ -234,8 +247,8 @@ class FirestoreServices implements DbBase {
 
       // Delete user's conversations
       var conversationsSnapshot = await firestore
-          .collection("konusanlar")
-          .where("konusma_sahibi", isEqualTo: userId)
+          .collection("conversations")
+          .where("conversationOwner", isEqualTo: userId)
           .get();
 
       for (var doc in conversationsSnapshot.docs) {
@@ -243,9 +256,9 @@ class FirestoreServices implements DbBase {
         
         // Delete messages in the conversation
         var messagesSnapshot = await firestore
-            .collection("konusanlar")
+            .collection("conversations")
             .doc(chatId)
-            .collection("mesajlar")
+            .collection("messages")
             .get();
             
         for (var messageDoc in messagesSnapshot.docs) {
@@ -258,8 +271,8 @@ class FirestoreServices implements DbBase {
 
       // Delete conversations where user is the recipient
       var recipientConversationsSnapshot = await firestore
-          .collection("konusanlar")
-          .where("kimle_konusuyor", isEqualTo: userId)
+          .collection("conversations")
+          .where("talkingTo", isEqualTo: userId)
           .get();
 
       for (var doc in recipientConversationsSnapshot.docs) {
@@ -267,9 +280,9 @@ class FirestoreServices implements DbBase {
         
         // Delete messages in the conversation
         var messagesSnapshot = await firestore
-            .collection("konusanlar")
+            .collection("conversations")
             .doc(chatId)
-            .collection("mesajlar")
+            .collection("messages")
             .get();
             
         for (var messageDoc in messagesSnapshot.docs) {
