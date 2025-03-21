@@ -20,9 +20,44 @@ class ProfilePageView extends StatefulWidget {
 
 class _ProfilePageViewState extends State<ProfilePageView> {
   TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController surnameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Get user data from SignUpBloc state
+    final userModel = context.read<SignUpBloc>().state.userModel;
+    
+    // Initialize controllers with user data
+    emailController.text = userModel.email;
+    nameController.text = userModel.userName ?? '';
+    surnameController.text = userModel.surname ?? '';
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    nameController.dispose();
+    surnameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _updateUserInfo() async {
+    final userModel = context.read<SignUpBloc>().state.userModel;
+    final repository = context.read<SignUpBloc>().repository;
+
+    if (nameController.text != userModel.userName) {
+      await repository.updateUserName(userModel.userId, nameController.text);
+    }
+
+    if (surnameController.text != userModel.surname) {
+      await repository.updateSurname(userModel.userId, surnameController.text);
+    }
+
+    // Refresh user data
+    context.read<SignUpBloc>().add(CurrentUserStartEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +101,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                         controller: nameController,
                         hintText: name,
                         labelText: name,
+                        readOnly: false,
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -73,12 +109,14 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                           controller: surnameController,
                           hintText: surname,
                           labelText: surname,
+                          readOnly: false,
                         ),
                       ),
                       CustomTextFormField(
                         controller: emailController,
                         hintText: email,
                         labelText: email,
+                        readOnly: true,
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -86,7 +124,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                           text: save,
                           color: customRed,
                           textColor: white,
-                          onTop: () {},
+                          onTop: _updateUserInfo,
                         ),
                       ),
                     ],

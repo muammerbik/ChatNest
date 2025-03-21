@@ -10,16 +10,37 @@ class FirestoreServices implements DbBase {
 
   @override
   Future<bool> saveUser(UserModel userModel) async {
-    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-        await firestore.doc("users/${userModel.userId}").get();
-    if (documentSnapshot.data() == null) {
-      await firestore
-          .collection("users")
-          .doc(userModel.userId)
-          .set(userModel.toMap());
-      return true;
-    } else {
-      return true;
+    try {
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+          await firestore.doc("users/${userModel.userId}").get();
+      if (documentSnapshot.data() == null) {
+        Map<String, dynamic> userData = {
+          ...userModel.toMap(),
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        };
+        
+        await firestore
+            .collection("users")
+            .doc(userModel.userId)
+            .set(userData);
+        return true;
+      } else {
+        // Update existing user data
+        Map<String, dynamic> userData = {
+          ...userModel.toMap(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        };
+        
+        await firestore
+            .collection("users")
+            .doc(userModel.userId)
+            .update(userData);
+        return true;
+      }
+    } catch (e) {
+      debugPrint("Save user error in FirestoreServices: $e");
+      return false;
     }
   }
 
@@ -37,18 +58,28 @@ class FirestoreServices implements DbBase {
 
   @override
   Future<bool> updateUserName(String userId, String newUserName) async {
-    var users = await firestore
-        .collection("users")
-        .where("userName", isEqualTo: newUserName)
-        .get();
-    if (users.docs.isNotEmpty) {
-      return false;
-    } else {
+    try {
       await firestore
           .collection("users")
           .doc(userId)
           .update({"userName": newUserName});
       return true;
+    } catch (e) {
+      debugPrint("Update username error: $e");
+      return false;
+    }
+  }
+
+  Future<bool> updateSurname(String userId, String newSurname) async {
+    try {
+      await firestore
+          .collection("users")
+          .doc(userId)
+          .update({"surname": newSurname});
+      return true;
+    } catch (e) {
+      debugPrint("Update surname error: $e");
+      return false;
     }
   }
 
@@ -168,15 +199,15 @@ class FirestoreServices implements DbBase {
       debugPrint("ilk defa kullanıcılar getirliliyor");
       querySnapshot = await FirebaseFirestore.instance
           .collection("users")
-          .orderBy("userName")
+          .orderBy("createdAt", descending: true)
           .limit(numberOfElementsToFetch)
           .get();
     } else {
       debugPrint("Sonraki kullanıcılar getirliliyor");
       querySnapshot = await FirebaseFirestore.instance
           .collection("users")
-          .orderBy("userName")
-          .startAfter([lastFetchedUser.userName])
+          .orderBy("createdAt", descending: true)
+          .startAfter([lastFetchedUser.createdAt])
           .limit(numberOfElementsToFetch)
           .get();
       await Future.delayed(

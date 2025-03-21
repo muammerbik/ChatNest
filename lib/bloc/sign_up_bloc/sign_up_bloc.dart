@@ -37,16 +37,32 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         state.copyWith(status: SignUpStatus.loading),
       );
 
-      final userModel =
-          await repository.createUserWithSingIn(event.email, event.password);
+      // Create initial user model with all required fields
+      UserModel initialUserModel = UserModel(
+        userId: "",  // This will be set by Firebase Auth
+        email: event.email,
+        userName: event.name,  // Store name separately
+        surname: event.surname // Store surname separately
+      );
+
+      final userModel = await repository.createUserWithSingIn(event.email, event.password);
 
       if (userModel != null) {
+        // Update the user model with the correct userId and all other fields
+        final updatedUserModel = initialUserModel.copyWith(
+          userId: userModel.userId,
+        );
+
+        // Save the complete user data to Firestore
+        await repository.fireStoreService.saveUser(updatedUserModel);
+
         emit(
           state.copyWith(
             status: SignUpStatus.success,
-            userModel: userModel,
+            userModel: updatedUserModel,
           ),
         );
+        return updatedUserModel;
       } else {
         emit(
           state.copyWith(status: SignUpStatus.error),
@@ -59,7 +75,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       debugPrint("SignUp Error: $e");
     }
     return null;
-    //Hata çıkarsa <UserModel?>i voide çevir ve return null 'ı kaldır.
   }
 
   Future<void> currentUserEvent(

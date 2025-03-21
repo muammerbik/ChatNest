@@ -50,14 +50,14 @@ class Repository implements AuthBase {
 
   @override
   Future<UserModel?> createUserWithSingIn(String email, String password) async {
-    UserModel? userModel =
-        await firebaseAuthService.createUserWithSingIn(email, password);
-    bool result = await fireStoreService.saveUser(userModel!);
-    if (result) {
-      return await fireStoreService.readUser(userModel.userId);
-    } else {
-      return null;
+    UserModel? userModel = await firebaseAuthService.createUserWithSingIn(email, password);
+    if (userModel != null) {
+      bool result = await fireStoreService.saveUser(userModel);
+      if (result) {
+        return await fireStoreService.readUser(userModel.userId);
+      }
     }
+    return null;
   }
 
   @override
@@ -69,6 +69,10 @@ class Repository implements AuthBase {
 
   Future<bool> updateUserName(String userId, String newUserName) async {
     return await fireStoreService.updateUserName(userId, newUserName);
+  }
+
+  Future<bool> updateSurname(String userId, String newSurname) async {
+    return await fireStoreService.updateSurname(userId, newSurname);
   }
 
   Future<String> uploadFile(
@@ -113,7 +117,7 @@ class Repository implements AuthBase {
       debugPrint("VERİLER VERİTABANINDAN  OKUNDU");
       var userFetchedFromDatabase =
           await fireStoreService.readUser(currentConversation.talkingTo);
-      currentConversation.talkingToUserName = userFetchedFromDatabase.userName;
+      currentConversation.talkingToUserName = userFetchedFromDatabase.getDisplayName();
       currentConversation.talkingToUserProfileUrl = userFetchedFromDatabase.profileUrl;
       calculateTimeAgo(currentConversation, currentTime);
     }

@@ -104,6 +104,8 @@ const emptyPageText = 'Bu sayfada henüz bir veri\nyok gibi gözüküyor.';
 const signInSnackBarText1 = "Şifre ve e mail alanları boş olamaz!";
 const signInErrorSnackBarText =
     "Giriş Başarısız! Lütfen bilgilerinizi kontrol edin.";
+const deleteChatTitle = 'Delete Chat';
+const deleteChatSubTitle = "Are you sure you want to delete this chat?";
 
 //IMAGE
 const appIcon = "assets/icons/chat.png";

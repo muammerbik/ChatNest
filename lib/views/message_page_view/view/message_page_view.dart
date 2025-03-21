@@ -76,7 +76,7 @@ class _MessagePageViewState extends State<MessagePageView> {
                 ),
                 SizedBox(width: 12.w),
                 TextWidgets(
-                  text: widget.chattedUser.userName ?? '',
+                  text: widget.chattedUser.getDisplayName(),
                   size: 18.sp,
                   fontWeight: FontWeight.w500,
                 ),

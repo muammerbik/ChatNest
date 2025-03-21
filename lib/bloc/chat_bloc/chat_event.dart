@@ -15,3 +15,13 @@ class GetAllConversationsEvent extends ChatEvent {
   @override
   List<Object> get props => [userId];
 }
+
+class ChatDeleteEvent extends ChatEvent {
+  final String currentUserId;
+  final String chattedUserId;
+
+  const ChatDeleteEvent(
+      {required this.currentUserId, required this.chattedUserId});
+  @override
+  List<Object> get props => [currentUserId, chattedUserId];
+}

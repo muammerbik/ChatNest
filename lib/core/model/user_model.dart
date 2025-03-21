@@ -55,14 +55,9 @@ class UserModel {
     return <String, dynamic>{
       'userId': userId,
       'email': email,
-      'userName': userName ??
-          email.substring(
-                0,
-                email.indexOf("@"),
-              ) +
-              randomNumber(),
+      'userName': userName,
       'surname': surname,
-      'profileUrl': profileUrl ,
+      'profileUrl': profileUrl,
       'createdAt':
           createdAt?.millisecondsSinceEpoch ?? FieldValue.serverTimestamp(),
       'updatedAt':
@@ -74,10 +69,9 @@ class UserModel {
     return UserModel(
       userId: map['userId'] as String? ?? '',
       email: map['email'] as String? ?? '',
-      userName: map['userName'] as String? ??"",
+      userName: map['userName'] as String? ?? "",
       surname: map['surname'] as String? ?? "",
-      profileUrl: map['profileUrl'] as String? ??
-          "",
+      profileUrl: map['profileUrl'] as String? ?? "",
       createdAt: map['createdAt'] != null
           ? (map['createdAt'] as Timestamp).toDate()
           : null,
@@ -124,5 +118,17 @@ class UserModel {
   String randomNumber() {
     int generatedRandomNumber = Random().nextInt(999999);
     return generatedRandomNumber.toString();
+  }
+
+  String getDisplayName() {
+    if (userName != null && surname != null) {
+      return "$userName $surname";
+    } else if (userName != null) {
+      return userName!;
+    } else if (surname != null) {
+      return surname!;
+    } else {
+      return email;
+    }
   }
 }

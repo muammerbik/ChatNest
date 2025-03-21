@@ -1,10 +1,13 @@
 import 'package:chat_menager/bloc/chat_bloc/chat_bloc.dart';
 import 'package:chat_menager/bloc/chat_bloc/chat_state.dart';
+import 'package:chat_menager/components/dialog/custom_alert_dialog.dart';
 import 'package:chat_menager/components/navigation_helper/navigation_halper.dart';
 import 'package:chat_menager/constants/app_strings.dart';
 import 'package:chat_menager/views/empty_page_view/empty_page_view.dart';
 import 'package:chat_menager/views/loading_page_view/loading_page.dart';
 import 'package:chat_menager/views/message_page_view/view/message_page_view.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,6 +16,7 @@ import 'package:chat_menager/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:chat_menager/components/custom_appBar/custom_appBar.dart';
 import 'package:chat_menager/components/custom_text/custom_text.dart';
 import 'package:chat_menager/core/model/user_model.dart';
+import 'package:intl/intl.dart';
 
 class ChatPageView extends StatefulWidget {
   const ChatPageView({
@@ -23,15 +27,36 @@ class ChatPageView extends StatefulWidget {
   State<ChatPageView> createState() => _ChatPageViewState();
 }
 
-class _ChatPageViewState extends State<ChatPageView> {
+class _ChatPageViewState extends State<ChatPageView>
+    with WidgetsBindingObserver {
+  late final String currentUserId;
+
   @override
   void initState() {
-    final currentUserId = context.read<SignUpBloc>().state.userModel.userId;
+    super.initState();
+    currentUserId = context.read<SignUpBloc>().state.userModel.userId;
     debugPrint("ChatPageView - Current User ID: $currentUserId");
+    _refreshChatList();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _refreshChatList();
+    }
+  }
+
+  void _refreshChatList() {
     context.read<ChatBloc>().add(
           GetAllConversationsEvent(userId: currentUserId),
         );
-    super.initState();
   }
 
   @override
@@ -51,9 +76,7 @@ class _ChatPageViewState extends State<ChatPageView> {
               appBarTitle: chats,
               actionIcons: [
                 IconButton(
-                  onPressed: () {
-                    //Arama özelliği eklenecek!
-                  },
+                  onPressed: () {},
                   icon: Icon(
                     Icons.search,
                     color: black,
@@ -66,64 +89,90 @@ class _ChatPageViewState extends State<ChatPageView> {
                     itemCount: state.chatList.length,
                     itemBuilder: (context, index) {
                       final chat = state.chatList[index];
-                      return ListTile(
-                        leading: chat.talkingToUserProfileUrl!.isNotEmpty
-                            ? CircleAvatar(
-                                radius: 24.r,
-                                backgroundColor: grey.withAlpha(30),
-                                backgroundImage:
-                                    NetworkImage(chat.talkingToUserProfileUrl!),
-                              )
-                            : CircleAvatar(
-                                radius: 24.r,
-                                backgroundColor: grey.withAlpha(30),
-                                backgroundImage: AssetImage(userImage),
-                              ),
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextWidgets(
-                              text: _getShortenedText(
-                                  chat.talkingToUserName!, 28),
-                              size: 16.sp,
-                              textAlign: TextAlign.start,
-                              fontWeight: FontWeight.w500,
-                            ),
-                            TextWidgets(
-                              text: "12:56",
-                              size: 12.sp,
-                              textAlign: TextAlign.end,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ],
-                        ),
-                        subtitle: TextWidgets(
-                          text: _getShortenedText(chat.lastSentMessage, 36),
-                          size: 14.sp,
-                          textAlign: TextAlign.start,
-                          fontWeight: FontWeight.normal,
-                        ),
-                        onTap: () {
-                          final currentUser =
-                              context.read<SignUpBloc>().state.userModel;
-                          final messageBloc = context.read<MessageBloc>();
-
-                          Navigation.push(
-                            page: MessagePageView(
-                              currentUser: currentUser,
-                              chattedUser: UserModel.withIdAndProfileUrl(
-                                  userId: chat.talkingTo,
-                                  profileUrl: chat.talkingToUserProfileUrl,
-                                  userName: chat.talkingToUserName),
-                            ),
-                          );
-                          messageBloc.add(
-                            GetMessageEvent(
-                              currentUserId: currentUser.userId,
-                              chattedUserId: chat.talkingTo,
-                            ),
+                      return GestureDetector(
+                        onLongPress: () {
+                          showCupertinoDialog(
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (context) {
+                              return CustomCupertinoAlertDialog(
+                                title: deleteChatTitle,
+                                content: deleteChatSubTitle,
+                                noButtonOnTap: () {
+                                  Navigation.ofPop();
+                                },
+                                noButtonText: cancel,
+                                yesButtonOnTap: () {
+                                  context.read<ChatBloc>().add(
+                                        ChatDeleteEvent(
+                                          currentUserId: currentUserId,
+                                          chattedUserId: chat.talkingTo,
+                                        ),
+                                      );
+                                  Navigator.pop(context);
+                                  _refreshChatList();
+                                },
+                                yesButtonText: ok,
+                              );
+                            },
                           );
                         },
+                        child: ListTile(
+                          leading: chat.talkingToUserProfileUrl!.isNotEmpty
+                              ? CircleAvatar(
+                                  radius: 24.r,
+                                  backgroundColor: grey.withAlpha(30),
+                                  backgroundImage: NetworkImage(
+                                      chat.talkingToUserProfileUrl!),
+                                )
+                              : CircleAvatar(
+                                  radius: 24.r,
+                                  backgroundColor: grey.withAlpha(30),
+                                  backgroundImage: AssetImage(userImage),
+                                ),
+                          title: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              TextWidgets(
+                                text: _getShortenedText(
+                                    chat.talkingToUserName!, 28),
+                                size: 16.sp,
+                                textAlign: TextAlign.start,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              TextWidgets(
+                                text: _formatTime(chat.createdAt),
+                                size: 12.sp,
+                                textAlign: TextAlign.end,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ],
+                          ),
+                          subtitle: TextWidgets(
+                            text: _getShortenedText(chat.lastSentMessage, 36),
+                            size: 14.sp,
+                            textAlign: TextAlign.start,
+                            fontWeight: FontWeight.normal,
+                          ),
+                          onTap: () async {
+                            final currentUser =
+                                context.read<SignUpBloc>().state.userModel;
+                            /* final messageBloc = context.read<MessageBloc>(); */
+
+                            await Navigation.push(
+                              page: MessagePageView(
+                                currentUser: currentUser,
+                                chattedUser: UserModel.withIdAndProfileUrl(
+                                    userId: chat.talkingTo,
+                                    profileUrl: chat.talkingToUserProfileUrl,
+                                    userName: chat.talkingToUserName),
+                              ),
+                            );
+
+                            // Mesajlaşma sayfasından dönüldüğünde listeyi güncelle
+                            _refreshChatList();
+                          },
+                        ),
                       );
                     },
                   )
@@ -134,6 +183,26 @@ class _ChatPageViewState extends State<ChatPageView> {
         }
       },
     );
+  }
+
+  String _formatTime(Timestamp timestamp) {
+    final now = DateTime.now();
+    final date = timestamp.toDate();
+    final diff = now.difference(date);
+
+    if (diff.inDays == 0) {
+      // Today - show time
+      return DateFormat('HH:mm').format(date);
+    } else if (diff.inDays == 1) {
+      // Yesterday
+      return 'Yesterday';
+    } else if (diff.inDays < 7) {
+      // Within a week - show day name
+      return DateFormat('EEEE').format(date);
+    } else {
+      // Older - show date
+      return DateFormat('dd/MM/yy').format(date);
+    }
   }
 
   String _getShortenedText(String text, int maxLength) {
