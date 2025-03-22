@@ -4,12 +4,13 @@ import 'package:chat_menager/core/model/user_model.dart';
 import 'package:chat_menager/get_it/get_it.dart';
 import 'package:chat_menager/repository/repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 part 'home_event.dart';
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final repository = locator<Repository>();
-  String? _currentUserId; // Mevcut kullanıcı ID'sini saklamak için
+  String? _currentUserId;
 
   HomeBloc()
       : super(
@@ -40,9 +41,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   ) async {
     try {
       // Mevcut kullanıcı ID'sini sakla
-      if (event.currentUserId != null) {
-        _currentUserId = event.currentUserId;
-      }
+      _currentUserId = event.currentUserId;
+      debugPrint("Getting users with current user ID: $_currentUserId");
 
       if (!event.bringNewUser) {
         emit(state.copyWith(status: HomeStatus.loading, isLoading: true));
@@ -53,9 +53,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         state.pagePressPost,
       );
 
+      debugPrint("Fetched ${newList.length} users, filtering out current user");
+      
       // Mevcut kullanıcıyı filtrele
-      final filteredList =
-          newList.where((user) => user.userId != _currentUserId).toList();
+      final filteredList = _currentUserId != null 
+          ? newList.where((user) => user.userId != _currentUserId).toList()
+          : newList;
+
+      debugPrint("Filtered list contains ${filteredList.length} users");
 
       final addList = filteredList
           .where(
@@ -79,12 +84,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         ),
       );
     } catch (e) {
-      print("Hata oluştu: $e");
+      debugPrint("Hata oluştu: $e");
       emit(state.copyWith(status: HomeStatus.error, isLoading: false));
     }
   }
-
-
 
   Future<void> _loadMore(
     LoadMoreEvent event,
@@ -103,8 +106,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-
-
   Future<void> _refreshIndicator(
     RefreshIndicatorEvent event,
     Emitter<HomeState> emit,
@@ -122,7 +123,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     add(
       GetAllUserListWithPaginationEvent(
         latestFetchedUser: null,
-        bringNewUser: true,
+        bringNewUser: false,
         currentUserId: _currentUserId,
       ),
     );

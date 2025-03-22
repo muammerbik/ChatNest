@@ -28,6 +28,7 @@ class _HomePageViewState extends State<HomePageView> {
   void _refreshUserList() {
     final currentUser = context.read<SignUpBloc>().state.userModel;
     if (currentUser.userId.isNotEmpty) {
+      debugPrint("Refreshing user list with current user ID: ${currentUser.userId}");
       context.read<HomeBloc>().add(
             GetAllUserListWithPaginationEvent(
               latestFetchedUser: null,
