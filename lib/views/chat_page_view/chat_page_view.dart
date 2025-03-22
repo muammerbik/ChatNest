@@ -29,6 +29,7 @@ class ChatPageView extends StatefulWidget {
 class _ChatPageViewState extends State<ChatPageView>
     with WidgetsBindingObserver {
   late final String currentUserId;
+  bool isSearching = false;
 
   @override
   void initState() {
@@ -72,108 +73,151 @@ class _ChatPageViewState extends State<ChatPageView>
           return Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: CustomAppBarView(
-              appBarTitle: chats,
+              appBarTitle: isSearching ? '' : chats,
+              customTitle: isSearching
+                  ? SizedBox(
+                      height: 40.h,
+                      child: TextField(
+                        autofocus: true,
+                        controller:
+                            context.read<ChatBloc>().state.searchController,
+                        decoration: InputDecoration(
+                          hintText: 'Search chat...',
+                          border: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                        ),
+                        style: TextStyle(fontSize: 16),
+                        onChanged: (value) {
+                          context
+                              .read<ChatBloc>()
+                              .add(const SearchConversationsEvent());
+                        },
+                      ),
+                    )
+                  : null,
               actionIcons: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      isSearching = !isSearching;
+                      if (!isSearching) {
+                        context.read<ChatBloc>().state.searchController.clear();
+                        context
+                            .read<ChatBloc>()
+                            .add(const SearchConversationsEvent());
+                      }
+                    });
+                  },
                   icon: Icon(
-                    Icons.search,
+                    isSearching ? Icons.close : Icons.search,
                     color: black,
                   ),
                 ),
               ],
             ),
-            body: state.chatList.isNotEmpty
-                ? ListView.builder(
-                    itemCount: state.chatList.length,
-                    itemBuilder: (context, index) {
-                      final chat = state.chatList[index];
-                      return GestureDetector(
-                        onLongPress: () {
-                          showCupertinoDialog(
-                            barrierDismissible: true,
-                            context: context,
-                            builder: (context) {
-                              return CustomCupertinoAlertDialog(
-                                title: deleteChatTitle,
-                                content: deleteChatSubTitle,
-                                noButtonOnTap: () {
-                                  Navigation.ofPop();
+            body: state.chatList.isEmpty
+                ? EmptyPageView(
+                    message: chatsEmptyPageText,
+                  )
+                : isSearching && state.searchList.isEmpty
+                    ? EmptyPageView(
+                        message: 'No chats found matching your search',
+                      )
+                    : ListView.builder(
+                        itemCount:
+                            (isSearching ? state.searchList : state.chatList)
+                                .length,
+                        itemBuilder: (context, index) {
+                          final chat = (isSearching
+                              ? state.searchList
+                              : state.chatList)[index];
+                          return GestureDetector(
+                            onLongPress: () {
+                              showCupertinoDialog(
+                                barrierDismissible: true,
+                                context: context,
+                                builder: (context) {
+                                  return CustomCupertinoAlertDialog(
+                                    title: deleteChatTitle,
+                                    content: deleteChatSubTitle,
+                                    noButtonOnTap: () {
+                                      Navigation.ofPop();
+                                    },
+                                    noButtonText: cancel,
+                                    yesButtonOnTap: () {
+                                      context.read<ChatBloc>().add(
+                                            ChatDeleteEvent(
+                                              currentUserId: currentUserId,
+                                              chattedUserId: chat.talkingTo,
+                                            ),
+                                          );
+                                      Navigator.pop(context);
+                                      _refreshChatList();
+                                    },
+                                    yesButtonText: ok,
+                                  );
                                 },
-                                noButtonText: cancel,
-                                yesButtonOnTap: () {
-                                  context.read<ChatBloc>().add(
-                                        ChatDeleteEvent(
-                                          currentUserId: currentUserId,
-                                          chattedUserId: chat.talkingTo,
-                                        ),
-                                      );
-                                  Navigator.pop(context);
-                                  _refreshChatList();
-                                },
-                                yesButtonText: ok,
                               );
                             },
-                          );
-                        },
-                        child: ListTile(
-                          leading: chat.talkingToUserProfileUrl!.isNotEmpty
-                              ? CircleAvatar(
-                                  radius: 24.r,
-                                  backgroundColor: grey.withAlpha(30),
-                                  backgroundImage: NetworkImage(
-                                      chat.talkingToUserProfileUrl!),
-                                )
-                              : CircleAvatar(
-                                  radius: 24.r,
-                                  backgroundColor: grey.withAlpha(30),
-                                  backgroundImage: AssetImage(userImage),
-                                ),
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              TextWidgets(
-                                text: _getShortenedText(
-                                    chat.talkingToUserName!, 28),
-                                size: 16.sp,
-                                textAlign: TextAlign.start,
-                                fontWeight: FontWeight.w500,
+                            child: ListTile(
+                              leading: chat.talkingToUserProfileUrl!.isNotEmpty
+                                  ? CircleAvatar(
+                                      radius: 24.r,
+                                      backgroundColor: grey.withAlpha(30),
+                                      backgroundImage: NetworkImage(
+                                          chat.talkingToUserProfileUrl!),
+                                    )
+                                  : CircleAvatar(
+                                      radius: 24.r,
+                                      backgroundColor: grey.withAlpha(30),
+                                      backgroundImage: AssetImage(userImage),
+                                    ),
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  TextWidgets(
+                                    text: _getShortenedText(
+                                        chat.talkingToUserName!, 28),
+                                    size: 16.sp,
+                                    textAlign: TextAlign.start,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  TextWidgets(
+                                    text: _formatTime(chat.createdAt),
+                                    size: 12.sp,
+                                    textAlign: TextAlign.end,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                ],
                               ),
-                              TextWidgets(
-                                text: _formatTime(chat.createdAt),
-                                size: 12.sp,
-                                textAlign: TextAlign.end,
+                              subtitle: TextWidgets(
+                                text:
+                                    _getShortenedText(chat.lastSentMessage, 36),
+                                size: 14.sp,
+                                textAlign: TextAlign.start,
                                 fontWeight: FontWeight.normal,
                               ),
-                            ],
-                          ),
-                          subtitle: TextWidgets(
-                            text: _getShortenedText(chat.lastSentMessage, 36),
-                            size: 14.sp,
-                            textAlign: TextAlign.start,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          onTap: () async {
-                            final currentUser =
-                                context.read<SignUpBloc>().state.userModel;
-                            await Navigation.push(
-                              page: MessagePageView(
-                                currentUser: currentUser,
-                                chattedUser: UserModel.withIdAndProfileUrl(
-                                    userId: chat.talkingTo,
-                                    profileUrl: chat.talkingToUserProfileUrl,
-                                    userName: chat.talkingToUserName),
-                              ),
-                            );
-                            _refreshChatList();
-                          },
-                        ),
-                      );
-                    },
-                  )
-                : EmptyPageView(
-                    message: chatsEmptyPageText,
-                  ),
+                              onTap: () async {
+                                final currentUser =
+                                    context.read<SignUpBloc>().state.userModel;
+                                await Navigation.push(
+                                  page: MessagePageView(
+                                    currentUser: currentUser,
+                                    chattedUser: UserModel.withIdAndProfileUrl(
+                                        userId: chat.talkingTo,
+                                        profileUrl:
+                                            chat.talkingToUserProfileUrl,
+                                        userName: chat.talkingToUserName),
+                                  ),
+                                );
+                                _refreshChatList();
+                              },
+                            ),
+                          );
+                        },
+                      ),
           );
         }
       },

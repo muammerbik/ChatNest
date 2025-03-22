@@ -25,3 +25,9 @@ class ChatDeleteEvent extends ChatEvent {
   @override
   List<Object> get props => [currentUserId, chattedUserId];
 }
+
+class SearchConversationsEvent extends ChatEvent {
+  const SearchConversationsEvent();
+  @override
+  List<Object> get props => [];
+}

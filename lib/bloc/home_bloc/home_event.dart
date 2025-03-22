@@ -20,7 +20,7 @@ class GetAllUserListWithPaginationEvent extends HomeEvent {
 
   @override
   List<Object> get props => [
-        latestFetchedUser ?? UserModel(email: "", userId: ""), 
+        latestFetchedUser ?? UserModel(email: "", userId: ""),
         bringNewUser,
         currentUserId ?? "",
       ];
@@ -36,6 +36,12 @@ class LoadMoreEvent extends HomeEvent {
 class RefreshIndicatorEvent extends HomeEvent {
   const RefreshIndicatorEvent();
 
+  @override
+  List<Object> get props => [];
+}
+
+class SearchListEvent extends HomeEvent {
+  const SearchListEvent();
   @override
   List<Object> get props => [];
 }

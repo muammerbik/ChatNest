@@ -24,11 +24,13 @@ class HomePageView extends StatefulWidget {
 
 class _HomePageViewState extends State<HomePageView> {
   final ScrollController _scrollController = ScrollController();
+  bool _isSearchActive = false;
 
   void _refreshUserList() {
     final currentUser = context.read<SignUpBloc>().state.userModel;
     if (currentUser.userId.isNotEmpty) {
-      debugPrint("Refreshing user list with current user ID: ${currentUser.userId}");
+      debugPrint(
+          "Refreshing user list with current user ID: ${currentUser.userId}");
       context.read<HomeBloc>().add(
             GetAllUserListWithPaginationEvent(
               latestFetchedUser: null,
@@ -88,19 +90,114 @@ class _HomePageViewState extends State<HomePageView> {
           } else {
             return Scaffold(
               appBar: CustomAppBarView(
-                appBarTitle: users,
+                appBarTitle: _isSearchActive ? '' : users,
+                customTitle: _isSearchActive
+                    ? SizedBox(
+                        height: 40.h,
+                        child: TextField(
+                          autofocus: true,
+                          controller:
+                              context.read<HomeBloc>().state.searchController,
+                          decoration: InputDecoration(
+                            hintText: 'Search users...',
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                          ),
+                          style: TextStyle(fontSize: 16),
+                          onChanged: (value) {
+                            context
+                                .read<HomeBloc>()
+                                .add(const SearchListEvent());
+                          },
+                        ),
+                      )
+                    : null,
                 actionIcons: [
                   IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.search,
+                    onPressed: () {
+                      setState(() {
+                        _isSearchActive = !_isSearchActive;
+                        if (!_isSearchActive) {
+                          context
+                              .read<HomeBloc>()
+                              .state
+                              .searchController
+                              .clear();
+                          context.read<HomeBloc>().add(const SearchListEvent());
+                        }
+                      });
+                    },
+                    icon: Icon(
+                      _isSearchActive ? Icons.close : Icons.search,
                       color: black,
                     ),
                   ),
                 ],
               ),
-              body: state.allUserList.isNotEmpty
-                  ? RefreshIndicator(
+              body: _isSearchActive &&
+                      context
+                          .read<HomeBloc>()
+                          .state
+                          .searchController
+                          .text
+                          .isNotEmpty
+                  ? state.searchList.isEmpty
+                      ? EmptyPageView(
+                          message: 'No users found',
+                        )
+                      : ListView.builder(
+                          itemCount: state.searchList.length,
+                          itemBuilder: (context, index) {
+                            final user = state.searchList[index];
+                            return BlocBuilder<SignUpBloc, SignUpState>(
+                              builder: (context, signUpState) {
+                                final currentUser = signUpState.userModel;
+                                return GestureDetector(
+                                  onTap: () {
+                                    if (currentUser.userId.isNotEmpty) {
+                                      Navigation.push(
+                                        page: MessagePageView(
+                                          currentUser: currentUser,
+                                          chattedUser: user,
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: Container(
+                                    color: white,
+                                    child: ListTile(
+                                      title: TextWidgets(
+                                        text: user.getDisplayName(),
+                                        size: 16.sp,
+                                        textAlign: TextAlign.start,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                      leading: user.profileUrl != null &&
+                                              user.profileUrl!.isNotEmpty
+                                          ? CircleAvatar(
+                                              radius: 24.r,
+                                              backgroundColor:
+                                                  grey.withAlpha(30),
+                                              backgroundImage: NetworkImage(
+                                                  user.profileUrl!),
+                                            )
+                                          : CircleAvatar(
+                                              radius: 24.r,
+                                              backgroundColor:
+                                                  grey.withAlpha(30),
+                                              backgroundImage: AssetImage(
+                                                userImage,
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        )
+                  : RefreshIndicator(
                       onRefresh: () async {
                         context
                             .read<HomeBloc>()
@@ -177,9 +274,6 @@ class _HomePageViewState extends State<HomePageView> {
                           );
                         },
                       ),
-                    )
-                  : EmptyPageView(
-                      message: homeEmptyPageText,
                     ),
             );
           }

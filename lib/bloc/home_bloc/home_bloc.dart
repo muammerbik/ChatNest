@@ -4,6 +4,7 @@ import 'package:chat_menager/core/model/user_model.dart';
 import 'package:chat_menager/get_it/get_it.dart';
 import 'package:chat_menager/repository/repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 part 'home_event.dart';
 part 'home_state.dart';
@@ -21,11 +22,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             pagePressPost: 12,
             latestUser: null,
             isLoading: false,
+            searchList: [],
+            searchController: TextEditingController(),
           ),
         ) {
     on<GetAllUserListWithPaginationEvent>(_getUserWithPagination);
     on<LoadMoreEvent>(_loadMore);
     on<RefreshIndicatorEvent>(_refreshIndicator);
+    on<SearchListEvent>(_searchList);
 
     add(
       const GetAllUserListWithPaginationEvent(
@@ -54,9 +58,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
 
       debugPrint("Fetched ${newList.length} users, filtering out current user");
-      
+
       // Mevcut kullanıcıyı filtrele
-      final filteredList = _currentUserId != null 
+      final filteredList = _currentUserId != null
           ? newList.where((user) => user.userId != _currentUserId).toList()
           : newList;
 
@@ -126,6 +130,28 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         bringNewUser: false,
         currentUserId: _currentUserId,
       ),
+    );
+  }
+
+  Future<void> _searchList(
+      SearchListEvent event, Emitter<HomeState> emit) async {
+    var text = state.searchController.text.trim();
+    List<UserModel> newList = [];
+
+    if (text.isEmpty) {
+      newList = state.allUserList;
+    } else {
+      for (var userList in state.allUserList) {
+        if (userList.getDisplayName().toLowerCase().contains(
+              text.toLowerCase(),
+            )) {
+          newList.add(userList);
+        }
+      }
+    }
+
+    emit(
+      state.copyWith(searchList: newList),
     );
   }
 }

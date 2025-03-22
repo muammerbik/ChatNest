@@ -13,6 +13,7 @@ class CustomAppBarView extends StatefulWidget implements PreferredSizeWidget {
   final VoidCallback? onTap;
   final Color? iconColor;
   final IconButton? leadingIcon;
+  final Widget? customTitle;
 
   const CustomAppBarView({
     super.key,
@@ -24,6 +25,7 @@ class CustomAppBarView extends StatefulWidget implements PreferredSizeWidget {
     this.onTap,
     this.iconColor,
     this.leadingIcon,
+    this.customTitle,
   });
 
   @override
@@ -42,7 +44,7 @@ class _CustomAppBarViewState extends State<CustomAppBarView> {
         leadingWidth: 30,
         backgroundColor: widget.appBarColor ?? white,
         leading: widget.leadingIcon,
-        title: TextWidgets(
+        title: widget.customTitle ?? TextWidgets(
           text: widget.appBarTitle!,
           size: 24.sp,
           color: widget.textColor ?? black,
