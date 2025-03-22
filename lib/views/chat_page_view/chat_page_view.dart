@@ -5,13 +5,12 @@ import 'package:chat_menager/components/navigation_helper/navigation_halper.dart
 import 'package:chat_menager/constants/app_strings.dart';
 import 'package:chat_menager/views/empty_page_view/empty_page_view.dart';
 import 'package:chat_menager/views/loading_page_view/loading_page.dart';
-import 'package:chat_menager/views/message_page_view/view/message_page_view.dart';
+import 'package:chat_menager/views/message_page_view/message_page_view.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:chat_menager/bloc/message_bloc/message_bloc.dart';
 import 'package:chat_menager/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:chat_menager/components/custom_appBar/custom_appBar.dart';
 import 'package:chat_menager/components/custom_text/custom_text.dart';
@@ -157,8 +156,6 @@ class _ChatPageViewState extends State<ChatPageView>
                           onTap: () async {
                             final currentUser =
                                 context.read<SignUpBloc>().state.userModel;
-                            /* final messageBloc = context.read<MessageBloc>(); */
-
                             await Navigation.push(
                               page: MessagePageView(
                                 currentUser: currentUser,
@@ -168,8 +165,6 @@ class _ChatPageViewState extends State<ChatPageView>
                                     userName: chat.talkingToUserName),
                               ),
                             );
-
-                            // Mesajlaşma sayfasından dönüldüğünde listeyi güncelle
                             _refreshChatList();
                           },
                         ),

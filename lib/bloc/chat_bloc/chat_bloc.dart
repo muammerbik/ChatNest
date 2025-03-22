@@ -19,8 +19,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   Future<void> _getAllConversations(
       GetAllConversationsEvent event, Emitter<ChatState> emit) async {
     try {
-      /*     debugPrint("ChatBloc: Loading conversations");
-      emit(state.copyWith(status: ChatStatus.loading)); */
+      debugPrint("ChatBloc: Loading conversations");
+      emit(state.copyWith(status: ChatStatus.loading));
 
       final newList = await repository.getAllConversations(event.userId);
       debugPrint("ChatBloc: Loaded ${newList.length} conversations");
@@ -40,8 +40,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           await repository.chatDelete(event.currentUserId, event.chattedUserId);
 
       if (result) {
-        // After successful deletion, get the updated conversation list
-        add(GetAllConversationsEvent(userId: event.currentUserId));
+        add(
+          GetAllConversationsEvent(userId: event.currentUserId),
+        );
       } else {
         emit(state.copyWith(status: ChatStatus.error));
       }

@@ -2,8 +2,8 @@ import 'package:chat_menager/components/buttons/custom_elevated_button.dart';
 import 'package:chat_menager/components/custom_text/custom_text.dart';
 import 'package:chat_menager/components/navigation_helper/navigation_halper.dart';
 import 'package:chat_menager/constants/app_strings.dart';
-import 'package:chat_menager/views/sign_in_page_view/view/sign_in_page-view.dart';
-import 'package:chat_menager/views/sign_up_page_view/view/sign_up_page_view.dart';
+import 'package:chat_menager/views/sign_in_page_view/sign_in_page-view.dart';
+import 'package:chat_menager/views/sign_up_page_view/sign_up_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 

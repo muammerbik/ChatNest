@@ -8,7 +8,7 @@ import 'package:chat_menager/components/custom_textFormField/custom_textForm_Fie
 import 'package:chat_menager/components/dialog/custom_snackBar.dart';
 import 'package:chat_menager/constants/app_strings.dart';
 import 'package:chat_menager/views/loading_page_view/loading_page.dart';
-import 'package:chat_menager/views/sign_up_page_view/view/sign_up_page_view.dart';
+import 'package:chat_menager/views/sign_up_page_view/sign_up_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -29,11 +29,15 @@ class _SignInPageViewState extends State<SignInPageView> {
     return BlocConsumer<SignInBloc, SignInState>(
       listener: (context, state) {
         if (state.status == SignInStatus.success) {
-          context.read<SignUpBloc>().add(CurrentUserStartEvent());
+          context.read<SignUpBloc>().add(
+                CurrentUserStartEvent(),
+              );
 
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => BottomBar()),
+            MaterialPageRoute(
+              builder: (context) => BottomBar(),
+            ),
             (route) => false,
           );
         } else if (state.status == SignInStatus.error) {
@@ -81,6 +85,7 @@ class _SignInPageViewState extends State<SignInPageView> {
                         controller: emailController,
                         hintText: email,
                         labelText: email,
+                        keyboardType: TextInputType.emailAddress,
                       ),
                     ),
                     CustomTextFormField(
@@ -96,7 +101,7 @@ class _SignInPageViewState extends State<SignInPageView> {
                         child: GestureDetector(
                           onTap: () {},
                           child: TextWidgets(
-                            text: "Şifremi Unuttum",
+                            text: forgotPass,
                             size: 14.sp,
                             color: grey,
                             fontWeight: FontWeight.normal,

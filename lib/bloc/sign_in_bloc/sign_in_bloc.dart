@@ -18,11 +18,11 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
             userModel: UserModel(userId: "", email: ""),
           ),
         ) {
-    on<SignInStartEvent>(signInStart);
-    on<GoogleSignInEvent>(onGoogleSignIn);
+    on<SignInStartEvent>(_signInStart);
+    on<GoogleSignInEvent>(_onGoogleSignIn);
   }
 
-  Future<void> signInStart(
+  Future<void> _signInStart(
       SignInStartEvent event, Emitter<SignInState> emit) async {
     try {
       emit(
@@ -52,13 +52,9 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     }
   }
 
-  @override
-  Future<void> close() {
-    state.dispose();
-    return super.close();
-  }
 
-  Future<void> onGoogleSignIn(
+
+  Future<void> _onGoogleSignIn(
       GoogleSignInEvent event, Emitter<SignInState> emit) async {
     try {
       emit(

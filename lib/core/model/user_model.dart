@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
@@ -115,10 +114,6 @@ class UserModel {
         updatedAt.hashCode;
   }
 
-  String randomNumber() {
-    int generatedRandomNumber = Random().nextInt(999999);
-    return generatedRandomNumber.toString();
-  }
 
   String getDisplayName() {
     if (userName != null && surname != null) {

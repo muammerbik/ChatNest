@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:chat_menager/constants/app_strings.dart';
-import 'package:chat_menager/views/chat_page_view/view/chat_page_view.dart';
-import 'package:chat_menager/views/home_page_view/view/home_page_view.dart';
+import 'package:chat_menager/views/chat_page_view/chat_page_view.dart';
+import 'package:chat_menager/views/home_page_view/home_page_view.dart';
 import 'package:chat_menager/views/profile_page_view/view/profile_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';

@@ -22,17 +22,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             isLoading: false,
           ),
         ) {
-    on<GetAllUserListWithPaginationEvent>(getUserWithPagination);
-    on<LoadMoreEvent>(loadMore);
-    on<RefreshIndicatorEvent>(refreshIndicator);
+    on<GetAllUserListWithPaginationEvent>(_getUserWithPagination);
+    on<LoadMoreEvent>(_loadMore);
+    on<RefreshIndicatorEvent>(_refreshIndicator);
 
-    add(const GetAllUserListWithPaginationEvent(
-      latestFetchedUser: null,
-      bringNewUser: false,
-    ));
+    add(
+      const GetAllUserListWithPaginationEvent(
+        latestFetchedUser: null,
+        bringNewUser: false,
+      ),
+    );
   }
 
-  Future<void> getUserWithPagination(
+  Future<void> _getUserWithPagination(
     GetAllUserListWithPaginationEvent event,
     Emitter<HomeState> emit,
   ) async {
@@ -82,7 +84,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  Future<void> loadMore(
+
+
+  Future<void> _loadMore(
     LoadMoreEvent event,
     Emitter<HomeState> emit,
   ) async {
@@ -99,7 +103,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  Future<void> refreshIndicator(
+
+
+  Future<void> _refreshIndicator(
     RefreshIndicatorEvent event,
     Emitter<HomeState> emit,
   ) async {

@@ -2,7 +2,7 @@ import 'package:chat_menager/components/navigation_helper/navigation_halper.dart
 import 'package:chat_menager/constants/app_strings.dart';
 import 'package:chat_menager/views/empty_page_view/empty_page_view.dart';
 import 'package:chat_menager/views/loading_page_view/loading_page.dart';
-import 'package:chat_menager/views/message_page_view/view/message_page_view.dart';
+import 'package:chat_menager/views/message_page_view/message_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -63,17 +63,17 @@ class _HomePageViewState extends State<HomePageView> {
     return MultiBlocListener(
       listeners: [
         BlocListener<SignUpBloc, SignUpState>(
-          listenWhen: (previous, current) => 
-            previous.status != current.status && 
-            current.status == SignUpStatus.success,
+          listenWhen: (previous, current) =>
+              previous.status != current.status &&
+              current.status == SignUpStatus.success,
           listener: (context, state) {
             _refreshUserList();
           },
         ),
         BlocListener<SignInBloc, SignInState>(
-          listenWhen: (previous, current) => 
-            previous.status != current.status && 
-            current.status == SignInStatus.success,
+          listenWhen: (previous, current) =>
+              previous.status != current.status &&
+              current.status == SignInStatus.success,
           listener: (context, state) {
             _refreshUserList();
           },
@@ -116,9 +116,7 @@ class _HomePageViewState extends State<HomePageView> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: 8.w, vertical: 16.h),
                               child: Center(
-                                child: Lottie.asset(
-                                  'assets/jsonfiles/loading.json',
-                                ),
+                                child: Lottie.asset(loadingJson),
                               ),
                             );
                           }

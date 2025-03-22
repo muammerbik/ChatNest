@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 //Colors
@@ -54,8 +53,7 @@ const yes = "Yes";
 const no = "No";
 const successfulTransaction = "Successful transaction";
 const changesSaved = "Changes saved";
-const usernameContentError =
-    "UserName already exists, try a different username!";
+const usernameContentError ="UserName already exists, try a different username!";
 const profilePhoto = "Profile image uploaded successfully!";
 const profilePhotoContent = "profile picture processing has been completed.";
 const delete = "Delete";
@@ -65,47 +63,46 @@ const users = "Users ";
 const noRegisterUserFound = "No registered users found!";
 const chatDelete = "Chat deleted successfully";
 const chaNotDelete = "An error occurred while deleting the chat";
-const onboardingTitle =
-    "Arkadaşlarınla güvenli ve\nhızlı bir şekilde sohbet et!";
-const onboardingSubTitle = "Mesajlaşmanın en kolay yolu";
-const signIn = "Giriş Yap";
-const signUp = "Hesap Oluştur";
-const signUpSubTitle = "Hemen kayıt ol ve mesajlaşmaya başla!";
+const onboardingTitle ="Chat securely and quickly with your friends!";
+const onboardingSubTitle = "The easiest way to chat";
+const signIn ="Sign In";
+const signUp = "Create Account";
+const signUpSubTitle ="Sign up now and start chatting!";
 const name = "Name";
 const surname = "Surname";
 const email = "Email";
 const password = "Password";
-const googleSignUpText = "Google ile Kayıt Ol";
-const signUpText2 = "Hesabın var mı?";
-const signUpSnackBar = "Tüm alanların dolu olduğundan emin olun !";
-const welcome = "Hoş Geldiniz!";
-const signInSubTitle = "Hesabınıza giriş yapın";
-const signInSubTitle2 = "Hesabın yok mu?";
-const googleWithSignIn = "Google ile Giriş";
-const signInSnackBar = "Email ve şifre eksik ve boş olamaz!";
-const homeEmptyPageText = "Sohbet başlatmak için kullanıcı bulunamadı";
-const chatsEmptyPageText = "Henüz bir sohbet başlatılmadı!";
+const googleSignUpText = "Sign up with Google";
+const signUpText2 = "Do you have an account?";
+const signUpSnackBar ="Make sure all fields are filled!";
+const welcome = "Welcome!";
+const signInSubTitle = "Log in to your account";
+const signInSubTitle2 = "Don't have an account?";
+const googleWithSignIn = "Login with Google";
+const signInSnackBar = "Email and password cannot be empty or missing!";
+const homeEmptyPageText = "No user found to start a chat";
+const chatsEmptyPageText = "No chat has been started yet!";
 const save = "Save";
 const cancel = "Cancel";
 const gallery = "Gallery";
 const camera = "Camera";
 const messageText = "Message";
 const settings = "Settings";
-const settingsAlertTitleText = "Çıkış yapmak istediğinize emin misiniz?";
-const settingsAlertSubtitleText = "Bu işlem geri alınmaz!";
+const settingsAlertTitleText = "Are you sure you want to log out?";
+const settingsAlertSubtitleText = "This action cannot be undone!";
 const rateUs = "Rate Us";
 const termOfUse = "Term of Use";
 const contactUs = "Contact Us";
 const recommendText = "Recommend to Friend";
 const signOut = "Sign Out";
 const deleteUser = "Delete user";
-const deleteUserTextTitle = "Hesabınızı silmek istediğinize emin misisniz?";
-const emptyPageText = 'Bu sayfada henüz bir veri\nyok gibi gözüküyor.';
-const signInSnackBarText1 = "Şifre ve e mail alanları boş olamaz!";
-const signInErrorSnackBarText =
-    "Giriş Başarısız! Lütfen bilgilerinizi kontrol edin.";
+const deleteUserTextTitle = "Are you sure you want to delete your account?";
+const emptyPageText = "It looks like there is no data on this page yet.";
+const signInSnackBarText1 = "Password and email fields cannot be empty!";
+const signInErrorSnackBarText = "Login Failed! Please check your details.";
 const deleteChatTitle = 'Delete Chat';
 const deleteChatSubTitle = "Are you sure you want to delete this chat?";
+const forgotPass = "I Forgot My Password";
 
 //IMAGE
 const appIcon = "assets/icons/chat.png";

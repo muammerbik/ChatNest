@@ -9,7 +9,7 @@ import 'package:chat_menager/components/dialog/custom_snackBar.dart';
 import 'package:chat_menager/components/navigation_helper/navigation_halper.dart';
 import 'package:chat_menager/constants/app_strings.dart';
 import 'package:chat_menager/views/loading_page_view/loading_page.dart';
-import 'package:chat_menager/views/sign_in_page_view/view/sign_in_page-view.dart';
+import 'package:chat_menager/views/sign_in_page_view/sign_in_page-view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,7 +34,9 @@ class _SignUpPageViewState extends State<SignUpPageView> {
         if (state.status == SignUpStatus.success) {
           Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => BottomBar()),
+            MaterialPageRoute(
+              builder: (context) => BottomBar(),
+            ),
             (route) => false,
           );
         } else if (state.status == SignUpStatus.error) {
@@ -120,13 +122,6 @@ class _SignUpPageViewState extends State<SignUpPageView> {
                                       password: passwordController.text,
                                     ),
                                   );
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BottomBar(),
-                                ),
-                                (route) => false,
-                              );
                             } else {
                               CustomSnackBar.show(
                                 context: context,

@@ -17,7 +17,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
   SignUpBloc()
       : super(SignUpState(
-          allUserList: [],
           status: SignUpStatus.init,
           userModel: UserModel(email: "", userId: ""),
         )) {
@@ -39,13 +38,14 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
       // Create initial user model with all required fields
       UserModel initialUserModel = UserModel(
-        userId: "",  // This will be set by Firebase Auth
-        email: event.email,
-        userName: event.name,  // Store name separately
-        surname: event.surname // Store surname separately
-      );
+          userId: "", // This will be set by Firebase Auth
+          email: event.email,
+          userName: event.name, // Store name separately
+          surname: event.surname // Store surname separately
+          );
 
-      final userModel = await repository.createUserWithSingIn(event.email, event.password);
+      final userModel =
+          await repository.createUserWithSingIn(event.email, event.password);
 
       if (userModel != null) {
         // Update the user model with the correct userId and all other fields
@@ -77,6 +77,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     return null;
   }
 
+
+
   Future<void> currentUserEvent(
       CurrentUserStartEvent event, Emitter<SignUpState> emit) async {
     try {
@@ -93,7 +95,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
             userModel: userModel,
           ),
         );
-        debugPrint("SignUpBloc state updated with user: ${state.userModel.toString()}");
+        debugPrint(
+            "SignUpBloc state updated with user: ${state.userModel.toString()}");
       } else {
         emit(
           state.copyWith(status: SignUpStatus.error),
@@ -107,6 +110,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       debugPrint("Current User Error: $e");
     }
   }
+
+
 
   Future<void> _onPickImageFromGallery(
     PickImageFromGalleryEvent event,
@@ -137,6 +142,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     }
   }
 
+
+
   Future<void> _onPickImageFromCamera(
     PickImageFromCameraEvent event,
     Emitter<SignUpState> emit,
@@ -165,6 +172,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       );
     }
   }
+
+
 
   Future<void> _onCropImage(
     CropImageEvent event,
@@ -227,6 +236,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     }
   }
 
+
+
   Future<void> _onUpdateUserName(
     UpdateUserNameEvent event,
     Emitter<SignUpState> emit,
@@ -241,7 +252,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       );
 
       if (isUpdated) {
-        // Kullanıcı adı güncellendi, state'i güncelle
         final updatedUserModel = state.userModel.copyWith(
           userName: event.newUserName,
         );
@@ -264,6 +274,8 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     }
   }
 
+  
+
   Future<void> _onUploadFile(
     UploadFileEvent event,
     Emitter<SignUpState> emit,
@@ -278,7 +290,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         event.profilePhoto,
       );
       if (fileUrl.isNotEmpty) {
-        // Dosya başarıyla yüklendi, state'i güncelle
         final updatedUserModel = state.userModel.copyWith(
           profileUrl: fileUrl,
         );

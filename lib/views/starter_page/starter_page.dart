@@ -1,6 +1,6 @@
 import 'package:chat_menager/bloc/sign_up_bloc/sign_up_bloc.dart';
 import 'package:chat_menager/components/buttons/custom_bottom_bar.dart';
-import 'package:chat_menager/views/onboarding_view/view/onboarding_page_view.dart';
+import 'package:chat_menager/views/onboarding_view/onboarding_page_view.dart';
 import 'package:chat_menager/views/splash_page_view/splash_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -49,8 +49,7 @@ class MainView extends StatelessWidget {
         builder: (context, state) {
           if (state.status == SignUpStatus.loading) {
             return SplashPageView();
-          } else if (state.status == SignUpStatus.success &&
-              state.userModel != null) {
+          } else if (state.status == SignUpStatus.success) {
             return BottomBar();
           } else {
             return OnboardingPageView();
