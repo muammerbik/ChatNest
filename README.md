@@ -1,4 +1,4 @@
-# chat_menager
+# ChatNest
 
 A new Flutter project.
 
