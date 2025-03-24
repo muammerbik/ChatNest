@@ -19,7 +19,7 @@ Technologies and Flutter packages used in this project:
   - Firebase Auth: User authentication (email, password, Google sign-in).
   - Firestore: Real-time messaging and database operations.
   - Firebase Storage: For uploading media files.
-- **Flutter Packages**:
+- **Flutter Packages**
   - `cupertino_icons
   - `google_fonts
   - `page_transition
