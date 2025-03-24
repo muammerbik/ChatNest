@@ -8,4 +8,5 @@ abstract class AuthBase {
   Future<UserModel?> createUserWithSingIn(String email, String password);
   Future<UserModel?> emailAndPasswordWithSingIn(String email, String password);
   Future<bool> deleteUser();
+  Future<bool> resetPassword(String email);
 }

@@ -20,6 +20,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
         ) {
     on<SignInStartEvent>(_signInStart);
     on<GoogleSignInEvent>(_onGoogleSignIn);
+    on<ResetPasswordEvent>(_resetPassword);
   }
 
   Future<void> _signInStart(
@@ -52,8 +53,6 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     }
   }
 
-
-
   Future<void> _onGoogleSignIn(
       GoogleSignInEvent event, Emitter<SignInState> emit) async {
     try {
@@ -82,6 +81,27 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
         ),
       );
       debugPrint("Google Sign-In Error: $e");
+    }
+  }
+
+  Future<void> _resetPassword(
+      ResetPasswordEvent event, Emitter<SignInState> emit) async {
+    try {
+      emit(state.copyWith(status: SignInStatus.loading));
+
+      final result = await repository.resetPassword(event.email.trim());
+      if (result) {
+        emit(state.copyWith(
+          status: SignInStatus.success,
+          userModel: UserModel(userId: "", email: ""),
+        ));
+      } else {
+        emit(state.copyWith(status: SignInStatus.error));
+        debugPrint("Şifre sıfırlama hatası:");
+      }
+    } catch (e) {
+      emit(state.copyWith(status: SignInStatus.error));
+      debugPrint("Şifre sıfırlama hatası: $e");
     }
   }
 }

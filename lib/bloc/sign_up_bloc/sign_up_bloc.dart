@@ -27,6 +27,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     on<CropImageEvent>(_onCropImage);
     on<UpdateUserNameEvent>(_onUpdateUserName);
     on<UploadFileEvent>(_onUploadFile);
+    on<UpdateSurnameEvent>(_updateSurname);
   }
 
   Future<UserModel?> onSignUpStartEvent(
@@ -77,8 +78,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     return null;
   }
 
-
-
   Future<void> currentUserEvent(
       CurrentUserStartEvent event, Emitter<SignUpState> emit) async {
     try {
@@ -111,8 +110,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     }
   }
 
-
-
   Future<void> _onPickImageFromGallery(
     PickImageFromGalleryEvent event,
     Emitter<SignUpState> emit,
@@ -142,8 +139,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     }
   }
 
-
-
   Future<void> _onPickImageFromCamera(
     PickImageFromCameraEvent event,
     Emitter<SignUpState> emit,
@@ -172,8 +167,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
       );
     }
   }
-
-
 
   Future<void> _onCropImage(
     CropImageEvent event,
@@ -236,8 +229,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     }
   }
 
-
-
   Future<void> _onUpdateUserName(
     UpdateUserNameEvent event,
     Emitter<SignUpState> emit,
@@ -274,8 +265,6 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
     }
   }
 
-  
-
   Future<void> _onUploadFile(
     UploadFileEvent event,
     Emitter<SignUpState> emit,
@@ -309,6 +298,34 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
         state.copyWith(status: SignUpStatus.error),
       );
       debugPrint("Upload File Error: $e");
+    }
+  }
+
+  Future<void> _updateSurname(
+      UpdateSurnameEvent event, Emitter<SignUpState> emit) async {
+    try {
+      emit(
+        state.copyWith(status: SignUpStatus.loading),
+      );
+
+      final updateSurname =
+          await repository.updateSurname(event.userId, event.newSurname);
+      if (updateSurname) {
+        final newSurnameModel =
+            state.userModel.copyWith(surname: event.newSurname);
+
+        emit(state.copyWith(
+            status: SignUpStatus.success, userModel: newSurnameModel));
+      } else {
+        emit(
+          state.copyWith(status: SignUpStatus.error),
+        );
+      }
+    } catch (e) {
+      emit(
+        state.copyWith(status: SignUpStatus.error),
+      );
+      debugPrint("Update User SUrname Error: $e");
     }
   }
 }

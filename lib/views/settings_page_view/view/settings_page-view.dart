@@ -86,7 +86,7 @@ class _SettingsPageViewState extends State<SettingsPageView> {
                       CustomSettingsButton(
                         leadingIcon: signOutIcon,
                         title: signOut,
-                        textColor: customRed,
+                        textColor: red,
                         onTap: () async {
                           showCupertinoDialog(
                             barrierDismissible: true,
@@ -114,7 +114,7 @@ class _SettingsPageViewState extends State<SettingsPageView> {
                         padding: EdgeInsets.symmetric(vertical: 12.h),
                         child: CustomSettingsButton(
                           leadingIcon: deleteUserIcon,
-                          textColor: customRed,
+                          textColor: red,
                           title: deleteUser,
                           onTap: () {
                             showCupertinoDialog(

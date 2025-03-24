@@ -182,22 +182,24 @@ class _ChatPageViewState extends State<ChatPageView>
                                         chat.talkingToUserName!, 28),
                                     size: 16.sp,
                                     textAlign: TextAlign.start,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                   TextWidgets(
                                     text: _formatTime(chat.createdAt),
-                                    size: 12.sp,
+                                    size: 13.sp,
                                     textAlign: TextAlign.end,
                                     fontWeight: FontWeight.normal,
+                                    color: grey.shade600,
                                   ),
                                 ],
                               ),
                               subtitle: TextWidgets(
                                 text:
-                                    _getShortenedText(chat.lastSentMessage, 36),
+                                    _getShortenedText(chat.lastSentMessage, 32),
                                 size: 14.sp,
                                 textAlign: TextAlign.start,
                                 fontWeight: FontWeight.normal,
+                                color: grey.shade600,
                               ),
                               onTap: () async {
                                 final currentUser =

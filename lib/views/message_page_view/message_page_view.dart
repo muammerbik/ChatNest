@@ -295,7 +295,7 @@ class _MessagePageViewState extends State<MessagePageView> {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
+                          color: grey.withOpacity(0.2),
                           spreadRadius: 1,
                           blurRadius: 2,
                         ),
@@ -311,8 +311,7 @@ class _MessagePageViewState extends State<MessagePageView> {
                         children: [
                           Text(
                             currentMessage.content,
-                            style:
-                                TextStyle(fontSize: 16.sp, color: Colors.white),
+                            style: TextStyle(fontSize: 16.sp, color: white),
                           ),
                           SizedBox(height: 4.h),
                           TextWidgets(

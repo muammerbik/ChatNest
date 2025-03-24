@@ -50,6 +50,15 @@ class UpdateUserNameEvent extends SignUpEvent {
   List<Object> get props => [userId, newUserName];
 }
 
+class UpdateSurnameEvent extends SignUpEvent {
+  final String userId;
+  final String newSurname;
+
+  const UpdateSurnameEvent({required this.userId, required this.newSurname});
+  @override
+  List<Object> get props => [userId, newSurname];
+}
+
 class UploadFileEvent extends SignUpEvent {
   final String userId;
   final String fileType;

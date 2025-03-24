@@ -7,6 +7,7 @@ abstract class DbBase {
   Future<bool> saveUser(UserModel userModel);
   Future<UserModel> readUser(String userId);
   Future<bool> updateUserName(String userId, String newUserName);
+  Future<bool> updateSurname(String userId, String newSurname);
   Future<bool> updateProfilePhoto(String userId, String profilePhotoUrl);
   Future<List<UserModel>> getUserWithPagination(UserModel lastFetchedUser, int numberOfElementsToFetch);
   Stream<List<MessageModel>> getMessages(String currentUserId, String chattedUserId);

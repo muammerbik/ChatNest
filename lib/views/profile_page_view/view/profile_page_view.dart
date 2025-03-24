@@ -28,7 +28,7 @@ class _ProfilePageViewState extends State<ProfilePageView> {
     super.initState();
     // Get user data from SignUpBloc state
     final userModel = context.read<SignUpBloc>().state.userModel;
-    
+
     // Initialize controllers with user data
     emailController.text = userModel.email;
     nameController.text = userModel.userName ?? '';
@@ -41,22 +41,6 @@ class _ProfilePageViewState extends State<ProfilePageView> {
     nameController.dispose();
     surnameController.dispose();
     super.dispose();
-  }
-
-  Future<void> _updateUserInfo() async {
-    final userModel = context.read<SignUpBloc>().state.userModel;
-    final repository = context.read<SignUpBloc>().repository;
-
-    if (nameController.text != userModel.userName) {
-      await repository.updateUserName(userModel.userId, nameController.text);
-    }
-
-    if (surnameController.text != userModel.surname) {
-      await repository.updateSurname(userModel.userId, surnameController.text);
-    }
-
-    // Refresh user data
-    context.read<SignUpBloc>().add(CurrentUserStartEvent());
   }
 
   @override
@@ -124,7 +108,28 @@ class _ProfilePageViewState extends State<ProfilePageView> {
                           text: save,
                           color: customRed,
                           textColor: white,
-                          onTop: _updateUserInfo,
+                          onTop: () {
+                            final userModel =
+                                context.read<SignUpBloc>().state.userModel;
+
+                            if (nameController.text != userModel.userName) {
+                              context.read<SignUpBloc>().add(
+                                    UpdateUserNameEvent(
+                                      userId: userModel.userId,
+                                      newUserName: nameController.text,
+                                    ),
+                                  );
+                            }
+
+                            if (surnameController.text != userModel.surname) {
+                              context.read<SignUpBloc>().add(
+                                    UpdateSurnameEvent(
+                                      userId: userModel.userId,
+                                      newSurname: surnameController.text,
+                                    ),
+                                  );
+                            }
+                          },
                         ),
                       ),
                     ],

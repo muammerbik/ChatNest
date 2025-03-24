@@ -46,7 +46,7 @@ class OnboardingPageView extends StatelessWidget {
                 color: customRed,
                 textColor: white,
                 onTop: () {
-                  Navigation.pushAndRemoveAll(
+                  Navigation.push(
                     page: SignInPageView(),
                   );
                 },
@@ -59,7 +59,7 @@ class OnboardingPageView extends StatelessWidget {
                   textColor: customRed,
                   borderColor: customRed,
                   onTop: () {
-                    Navigation.pushAndRemoveAll(
+                    Navigation.push(
                       page: SignUpPageView(),
                     );
                   },

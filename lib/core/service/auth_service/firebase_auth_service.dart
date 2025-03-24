@@ -86,14 +86,12 @@ class FirebaseAuthService implements AuthBase {
     }
   }
 
-
   @override
   Future<UserModel?> createUserWithSingIn(String email, String password) async {
     var userCredential = await firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: password);
     return _userFromFirebase(userCredential.user!);
   }
-
 
   @override
   Future<UserModel?> emailAndPasswordWithSingIn(
@@ -102,7 +100,6 @@ class FirebaseAuthService implements AuthBase {
         email: email, password: password);
     return _userFromFirebase(userCredential.user!);
   }
-
 
   @override
   Future<bool> deleteUser() async {
@@ -115,6 +112,19 @@ class FirebaseAuthService implements AuthBase {
       return false;
     } catch (e) {
       debugPrint("Delete user error in FirebaseAuthService: $e");
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> resetPassword(String email) async {
+    try {
+      await firebaseAuth.sendPasswordResetEmail(email: email);
+      debugPrint(
+          "Şifre sıfırlama e-postası başarıyla $email adresine gönderildi.");
+      return true;
+    } catch (e) {
+      debugPrint("Şifre sıfırlama hatası: $e");
       return false;
     }
   }

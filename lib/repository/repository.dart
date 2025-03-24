@@ -50,7 +50,8 @@ class Repository implements AuthBase {
 
   @override
   Future<UserModel?> createUserWithSingIn(String email, String password) async {
-    UserModel? userModel = await firebaseAuthService.createUserWithSingIn(email, password);
+    UserModel? userModel =
+        await firebaseAuthService.createUserWithSingIn(email, password);
     if (userModel != null) {
       bool result = await fireStoreService.saveUser(userModel);
       if (result) {
@@ -61,7 +62,8 @@ class Repository implements AuthBase {
   }
 
   @override
-  Future<UserModel?> emailAndPasswordWithSingIn(String email, String password) async {
+  Future<UserModel?> emailAndPasswordWithSingIn(
+      String email, String password) async {
     UserModel? userModel =
         await firebaseAuthService.emailAndPasswordWithSingIn(email, password);
     return await fireStoreService.readUser(userModel!.userId);
@@ -83,7 +85,6 @@ class Repository implements AuthBase {
     return profilePhotoUrl;
   }
 
-
   Future<List<UserModel>> getUserWithPagination(
       UserModel? lastFetchedUser, int numberOfElementsToFetch) async {
     List<UserModel> userList = await fireStoreService.getUserWithPagination(
@@ -91,8 +92,6 @@ class Repository implements AuthBase {
     allPersonList.addAll(userList);
     return userList;
   }
-
-
 
   Stream<List<MessageModel>> getMessages(
       String currentUserId, String chattedUserId) {
@@ -103,22 +102,20 @@ class Repository implements AuthBase {
     return await fireStoreService.saveMessages(savedMessage);
   }
 
-
-  
-
   Future<List<ConversationModel>> getAllConversations(String userId) async {
     DateTime currentTime = await fireStoreService.showTime(userId);
     var conversationList = await fireStoreService.getAllConversations(userId);
     //konusmaModel sınıfımda kullanıcının username ve profilUrl değerini tutmadığım için, bu değerleri userModel sınıfından alıp kullanmaya çalışaçağım.bu nedenle yukarıda her yerden erişebileceğim tumKullanicilarListesi  listesini olusturdum.daha sonra userModeldeki bu verileri konusmaModele atayarak verileri istediğim verilere erişim sağladım.aşagıda  intarnete çıkmadan ve çıkarak ortamın durumuna göre verilere erişim sağlanıyor.//
     for (var currentConversation in conversationList) {
-      var userInList =
-          findUserInList(currentConversation.talkingTo);
+      var userInList = findUserInList(currentConversation.talkingTo);
 
       debugPrint("VERİLER VERİTABANINDAN  OKUNDU");
       var userFetchedFromDatabase =
           await fireStoreService.readUser(currentConversation.talkingTo);
-      currentConversation.talkingToUserName = userFetchedFromDatabase.getDisplayName();
-      currentConversation.talkingToUserProfileUrl = userFetchedFromDatabase.profileUrl;
+      currentConversation.talkingToUserName =
+          userFetchedFromDatabase.getDisplayName();
+      currentConversation.talkingToUserProfileUrl =
+          userFetchedFromDatabase.profileUrl;
       calculateTimeAgo(currentConversation, currentTime);
     }
     return conversationList;
@@ -127,7 +124,8 @@ class Repository implements AuthBase {
   void calculateTimeAgo(ConversationModel currentConversation, DateTime time) {
     currentConversation.lastReadTime = time;
     var duration = time.difference(currentConversation.createdAt.toDate());
-    currentConversation.timeDifference = timeago.format(time.subtract(duration));
+    currentConversation.timeDifference =
+        timeago.format(time.subtract(duration));
   }
 
   UserModel? findUserInList(String userId) {
@@ -140,9 +138,7 @@ class Repository implements AuthBase {
     return null;
   }
 
-
-  Future<bool> chatDelete(
-      String currentUserId, String chattedUserId) async {
+  Future<bool> chatDelete(String currentUserId, String chattedUserId) async {
     return await fireStoreService.chatDelete(currentUserId, chattedUserId);
   }
 
@@ -165,5 +161,9 @@ class Repository implements AuthBase {
       debugPrint("Delete user error in Repository: $e");
       return false;
     }
+  }
+
+  Future<bool> resetPassword(String email) async {
+    return await firebaseAuthService.resetPassword(email);
   }
 }
