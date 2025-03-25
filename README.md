@@ -30,4 +30,4 @@ Technologies and Flutter packages used in this project:
   - `firebase_storage
   - `google_sign_in
   - `timeago
-  - `flutter_launcher_icons
+  - `flutter_launcher_icons.
